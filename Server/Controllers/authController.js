@@ -5,7 +5,7 @@ import jwt from "jsonwebtoken";
 
 export const register = async (req, res) => {
   try {
-    const { name, email, password } = req.body;
+    const { username, email, password,age } = req.body;
     const existingUser = await User.findOne({email });
     if (existingUser) {
         return res.status(400).json({ message: "User already exists" });
@@ -14,17 +14,21 @@ export const register = async (req, res) => {
     const hashedPassword = await bcrypt.hash(password, salt);
 
     const newUser = new User({
-      name,
+      username,
       email,
       password: hashedPassword,
+      age,
     });
     await newUser.save();
     res.status(201).json({ message: "User registered successfully" });
   }
   catch (error) {
+    if (error.code === 11000 && error.keyPattern && error.keyPattern.email) {
+      return res.status(400).json({ message: "Email is already in use" });
+    }
     console.error(`Error: ${error.message}`);
+    res.status(500).json({ message: "Server error" });
   }
-
 }
 
 const createToken = (id) => {
@@ -43,11 +47,11 @@ export const login = async (req, res) => {
         const { email, password } = req.body;
         const user = await User.findOne({ email });
         if (!user) {
-            return res.status(400).json({ message: "Invalid credentials" });
+            return res.status(400).json({ message: "no user found" });
         }
         const isMatch = await bcrypt.compare(password, user.password);
         if (!isMatch) {
-            return res.status(400).json({ message: "Invalid credentials" });
+            return res.status(400).json({ message: "Invalid password" });
         }
         const accessToken = createToken(user._id);
         const refreshToken = createRefreshToken(user._id); 
@@ -62,7 +66,7 @@ export const login = async (req, res) => {
             sameSite: 'none',
 
         }); 
-        res.status(200).json({accessToken,refreshToken });
+        res.status(200).json({message:"Login Successfully",accessToken,refreshToken });
     }
     catch (error) {
         console.error(`Error: ${error.message}`);

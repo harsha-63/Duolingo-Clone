@@ -19,6 +19,11 @@ const userSchema = new mongoose.Schema({
     required: true,
     minlength: [6, 'Password must be at least 6 characters long'],
   },
+  age: {
+    type: Number,
+    required: true,
+    min: [1, 'Age must be a positive number']
+  },
   profileImage: {
     type: String,
     default: 'default-avatar.png'

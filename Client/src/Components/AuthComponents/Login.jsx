@@ -1,8 +1,11 @@
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import { FaFacebook, FaGoogle } from 'react-icons/fa';
+import { useContext } from 'react';
+import { AuthContext } from '../../Context/AuthContext';
 
 const Login = () => {
+  const { login } = useContext(AuthContext);
   const formik = useFormik({
     initialValues: {
       email: '',
@@ -12,8 +15,12 @@ const Login = () => {
       email: Yup.string().email('Invalid email address').required('Email is required'),
       password: Yup.string().min(6, 'Password must be at least 6 characters').required('Password is required'),
     }),
-    onSubmit: (values) => {
-      console.log('Form data', values); // Replace with actual login logic
+    onSubmit: async (values) => {
+      try {
+        await login( values.email, values.password);
+      } catch (error) {
+        console.error('login error', error); 
+      }
     },
   });
 
@@ -108,6 +115,7 @@ const Login = () => {
 };
 
 export default Login;
+
 
 
 

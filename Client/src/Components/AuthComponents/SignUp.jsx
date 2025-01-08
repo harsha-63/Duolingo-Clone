@@ -1,11 +1,14 @@
 import { FaFacebook } from 'react-icons/fa';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
+import { useContext } from 'react';
+import { AuthContext } from '../../Context/AuthContext';
 
 const SignUp = () => {
+  const {register} = useContext(AuthContext);
   const formik = useFormik({
     initialValues: {
-      name: '',
+      username: '',
       email: '',
       password: '',
       age: '',
@@ -24,9 +27,12 @@ const SignUp = () => {
         .min(1, 'Age must be a positive number')
         .required('Age is required'),
     }),
-    onSubmit: (values) => {
-      console.log('Form values', values);
-      // Handle signup logic here
+    onSubmit: async (values) => {
+      try {
+        await register(values.username, values.email, values.password, values.age);
+      } catch (error) {
+        console.error('Registration error', error); 
+      }
     },
   });
 
@@ -53,14 +59,14 @@ const SignUp = () => {
 
         <input
           type="text"
-          name="name"
+          name="username"
           placeholder="Name"
-          value={formik.values.name}
+          value={formik.values.username}
           onChange={formik.handleChange}
           onBlur={formik.handleBlur}
-          className={`w-full px-4 py-3 rounded-lg border ${formik.touched.name && formik.errors.name ? 'border-red-500' : 'border-gray-300'} focus:ring-2 focus:ring-blue-500 outline-none`}
+          className={`w-full px-4 py-3 rounded-lg border ${formik.touched.username && formik.errors.username ? 'border-red-500' : 'border-gray-300'} focus:ring-2 focus:ring-blue-500 outline-none`}
         />
-        {formik.touched.name && formik.errors.name && <p className="text-red-500 text-sm">{formik.errors.name}</p>}
+        {formik.touched.username && formik.errors.username && <p className="text-red-500 text-sm">{formik.errors.username}</p>}
 
         <input
           type="email"

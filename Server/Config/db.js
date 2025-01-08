@@ -1,14 +1,18 @@
 import mongoose from "mongoose";
 
-const connectDB = async () => {
+const connectDb = async () => {
+  mongoose.connection.on("connected", () =>
+    console.log("DB Connected")
+  );
   try {
-    const conn = await mongoose.connect(process.env.MONGODB_URI, {
-    });
-
-    console.log(`MongoDB Connected: ${conn.connection.host}`);
-  } catch (error) {
-    console.error(`Error: ${error.message}`);
-   
+    // connecting
+    await mongoose.connect(`${process.env.MONGODB_URI}/duolingo`),{
+    useNewUrlParser: true,
+      useUnifiedTopology: true,
+      connectTimeoutMS: 30000 }
+  } catch (err) {
+    console.log(err);
   }
-}
-export default connectDB;
+};
+
+export default connectDb;
