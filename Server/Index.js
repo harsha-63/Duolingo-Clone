@@ -4,6 +4,7 @@ import cors from 'cors'
 import connectDb from './Config/db.js'
 import authRouter from './Routes/authRoute.js'
 import cookieParser from 'cookie-parser'
+import languageRouter from './Routes/PublicRoutes/languageRoute.js'
 
 dotenv.config()
 const app = express();
@@ -14,6 +15,7 @@ app.use(cookieParser())
 connectDb();
 
 app.use('/auth',authRouter);
+app.use('/public',languageRouter)
 
 app.get('/', (req, res) => {
   res.send('API is running....');
