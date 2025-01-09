@@ -1,4 +1,5 @@
 import { useFormik } from 'formik';
+import { useNavigate } from 'react-router-dom';
 import * as Yup from 'yup';
 import { FaFacebook, FaGoogle } from 'react-icons/fa';
 import { useContext } from 'react';
@@ -6,6 +7,7 @@ import { AuthContext } from '../../Context/AuthContext';
 
 const Login = () => {
   const { login } = useContext(AuthContext);
+  const navigate = useNavigate();
   const formik = useFormik({
     initialValues: {
       email: '',
@@ -18,6 +20,7 @@ const Login = () => {
     onSubmit: async (values) => {
       try {
         await login( values.email, values.password);
+        navigate('/learn')
       } catch (error) {
         console.error('login error', error); 
       }
