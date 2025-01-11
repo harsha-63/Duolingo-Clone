@@ -42,36 +42,50 @@ const createRefreshToken = (id) => {
     });
     }
 
-export const login = async (req, res) => {
-    try {
-        const { email, password } = req.body;
-        const user = await User.findOne({ email });
-        if (!user) {
+    export const login = async (req, res) => {
+        try {
+          const { email, password } = req.body;
+          const user = await User.findOne({ email });
+          if (!user) {
             return res.status(400).json({ message: "no user found" });
-        }
-        const isMatch = await bcrypt.compare(password, user.password);
-        if (!isMatch) {
+          }
+          const isMatch = await bcrypt.compare(password, user.password);
+          if (!isMatch) {
             return res.status(400).json({ message: "Invalid password" });
-        }
-        const accessToken = createToken(user._id);
-        const refreshToken = createRefreshToken(user._id); 
-        res.cookie('accessToken' , accessToken, {
+          }
+          const accessToken = createToken(user._id);
+          const refreshToken = createRefreshToken(user._id); 
+          res.cookie('accessToken' , accessToken, {
             httpOnly: false,
             secure: true,
             sameSite: 'none',
-        })
-        res.cookie('refreshToken', refreshToken, {
+          })
+          res.cookie('refreshToken', refreshToken, {
             httpOnly: true,
             secure: true,
             sameSite: 'none',
-
-        }); 
-        res.status(200).json({message:"Login Successfully",accessToken,refreshToken });
-    }
-    catch (error) {
-        console.error(`Error: ${error.message}`);
-    }
-}
+          }); 
+          res.status(200).json({
+            message: "Login successfully",
+            user: {
+              id: user._id,
+              username: user.username,
+              email: user.email,
+              age: user.age,
+              flagUrl: user.flagUrl, 
+              xp: user.xp,            
+              gems: user.gems,       
+              life: user.life         
+            },
+            accessToken,
+            refreshToken,
+          });
+        }
+        catch (error) {
+          console.error(`Error: ${error.message}`);
+        }
+      }
+      
 
 export const logout = async (req, res) => {
     res.clearCookie("refreshToken")

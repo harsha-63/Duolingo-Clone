@@ -28,6 +28,20 @@ const userSchema = new mongoose.Schema({
     type: String,
     default: 'default-avatar.png'
   },
+  life: {
+    type: Number,
+    default: 5,
+    min: 0,
+    max: 5
+  },
+  gems: {
+    type: Number,
+    default: 0
+  },
+  xpPoints: {
+    type: Number,
+    default: 0
+  },
   level: {
     type: Number,
     default: 1,
@@ -35,10 +49,6 @@ const userSchema = new mongoose.Schema({
     max: 100
   },
   lessonsCompleted: {
-    type: Number,
-    default: 0
-  },
-  xpPoints: {
     type: Number,
     default: 0
   },
