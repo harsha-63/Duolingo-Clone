@@ -19,8 +19,13 @@ const MainPage = () => {
       setActiveContent('quests');
     } else if (location.pathname === '/profile') {
       setActiveContent('profile');
+    } else if (location.pathname === '/sounds') {
+      setActiveContent('sounds');
+    } else if (location.pathname === '/shop') {
+      setActiveContent('shop');
     }
-  }, [activeContent, location.pathname]);
+  }, [location.pathname]);
+  
 
   return (
     <div className="flex h-screen">

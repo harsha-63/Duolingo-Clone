@@ -23,8 +23,11 @@ const Sidebar = () => {
           <li key={item.to}>
             <NavLink
               to={item.to}
-              className=" flex items-center gap-3 px-4 py-2  mx-4  text-lg text-gray-500 font-semibold rounded-lg hover:bg-gray-200 transition"
-              activeClassName="bg-blue-200"
+              className={({ isActive }) =>
+                `flex items-center gap-3 px-4 py-2 mx-4 text-lg font-semibold rounded-lg transition ${
+                  isActive ? 'bg-blue-200 text-blue-400 border-2 border-blue-400' : 'text-gray-500 hover:bg-gray-200'
+                }`
+              }
             >
               <img src={item.icon} alt={item.label} className="w-10 h-10" />
               <span className="flex items-center">{item.label}</span>
@@ -37,6 +40,7 @@ const Sidebar = () => {
 };
 
 export default Sidebar;
+
 
 
 

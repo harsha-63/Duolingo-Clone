@@ -2,6 +2,7 @@ import { Link } from 'react-router-dom';
 import Header from '../Components/Header';
 import { useEffect, useState } from 'react';
 import axios from 'axios';
+import { FaChevronLeft, FaChevronRight } from 'react-icons/fa'; // Importing arrow icons
 
 const HomePage = () => {
   const [languages, setLanguages] = useState([]);
@@ -29,10 +30,25 @@ const HomePage = () => {
     fetchLanguages();
   }, []);
 
+  const [currentSlide, setCurrentSlide] = useState(0);
+
+  const handleNext = () => {
+    if (currentSlide + 6 < languages.length) {
+      setCurrentSlide(currentSlide + 3);
+    }
+  };
+
+  const handlePrev = () => {
+    if (currentSlide - 3 >= 0) {
+      setCurrentSlide(currentSlide - 3);
+    }
+  };
+
+  const displayedLanguages = languages.slice(currentSlide, currentSlide + 6);
+
   return (
     <div className="flex flex-col min-h-screen bg-white">
       <Header />
-
       <main className="flex flex-col lg:flex-row items-center justify-center flex-grow px-64">
         <div className="lg:w-1/2">
           <img
@@ -64,33 +80,46 @@ const HomePage = () => {
       </main>
 
       <footer className="py-4 pt-6 border-t border-gray-200">
-        <div className="relative overflow-hidden">
-         
-          {loading ? (
-            <p>Loading languages...</p>
-          ) : (
-            <div className="flex justify-center gap-10 items-center space-x-2 animate-scroll">
-              {Array.isArray(languages) && languages.length > 0 ? (
-                languages.map((lang) => (
-                  <div key={lang.name} className="flex items-center space-x-2">
-                    <img src={lang.flag} alt={lang.name} className="w-6 h-6" />
-                    <span>{lang.name}</span>
-                  </div>
-                ))
-              ) : (
-                <p>No languages available</p>
-              )}
+        {loading ? (
+          <p>Loading languages...</p>
+        ) : (
+          <div className="relative overflow-hidden">
+            <div className="flex justify-center items-center space-x-4 animate-scroll">
+              <FaChevronLeft
+                className="text-gray-700 cursor-pointer hover:text-gray-900"
+                onClick={handlePrev}
+                disabled={currentSlide === 0}
+              />
+              <div className="flex gap-6 overflow-hidden">
+                {Array.isArray(languages) && languages.length > 0 ? (
+                  displayedLanguages.map((lang) => (
+                    <div key={lang.name} className="flex items-center space-x-2">
+                      <img src={lang.flag} alt={lang.name} className="w-6 h-6" />
+                      <span>{lang.name}</span>
+                    </div>
+                  ))
+                ) : (
+                  <p>No languages available</p>
+                )}
+              </div>
+              <FaChevronRight
+                className="text-gray-700 cursor-pointer hover:text-gray-900"
+                onClick={handleNext}
+                disabled={currentSlide + 6 >= languages.length}
+              />
             </div>
-          )}
-          <div className="absolute inset-y-0 left-0 bg-gradient-to-r from-gray-50" />
-          <div className="absolute inset-y-0 right-0 bg-gradient-to-l from-gray-50" />
-        </div>
+            <div className="absolute inset-y-0 left-0 bg-gradient-to-r from-gray-50" />
+            <div className="absolute inset-y-0 right-0 bg-gradient-to-l from-gray-50" />
+          </div>
+        )}
       </footer>
     </div>
   );
 };
 
 export default HomePage;
+
+
 
 
 
