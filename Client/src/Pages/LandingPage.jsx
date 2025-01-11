@@ -20,9 +20,9 @@ const LandingPage = () => {
 <div className="absolute top-6 right-6 z-10">
   <button
     onClick={toggleAuthMode}
-    className="px-6 py-2 bg-white text-blue-600 font-semibold rounded-lg border border-blue-600 hover:bg-blue-100 transition-all"
+    className="px-4 py-3 bg-white text-blue-600 font-semibold rounded-2xl border border-gray-600 font-playpen text-sm hover:bg-blue-100 transition-all "
   >
-    {isLogin ? 'Sign Up' : 'Login'}
+    {isLogin ? 'SIGN UP' : 'LOGIN'}
   </button>
 </div>
 

@@ -29,16 +29,16 @@ const Header = () => {
   };
 
   return (
-    <header className="flex justify-between items-center px-64 py-3 pb-7 bg-white">
+    <header className="flex flex-col sm:flex-row justify-center sm:justify-between items-center px-4 sm:px-64 py-3 pb-7 bg-white">
       <div className="flex items-center space-x-2">
         <img
           src="https://i.pinimg.com/736x/fc/e8/ae/fce8ae69cc7d5aaf01208014b3e58dd4.jpg"
           alt="Duolingo Logo"
-          className="w-44 h-10"
+          className="w-32 sm:w-44 h-10"
         />
       </div>
       <div
-        className="relative inline-block"
+        className="relative inline-block hidden sm:block"
         onMouseEnter={() => setIsDropdownOpen(true)} 
         onMouseLeave={() => setIsDropdownOpen(false)} 
       >
@@ -69,5 +69,6 @@ const Header = () => {
 };
 
 export default Header;
+
 
 

@@ -19,54 +19,54 @@ const Login = () => {
     }),
     onSubmit: async (values) => {
       try {
-        await login( values.email, values.password);
-        navigate('/learn')
+        await login(values.email, values.password);
+        navigate('/learn');
       } catch (error) {
-        console.error('login error', error); 
+        console.error('login error', error);
       }
     },
   });
 
   return (
-    <div className="h-screen w-screen flex flex-col items-center justify-center bg-white relative">
-      <h1 className="text-4xl font-bold mb-8">Login</h1>
+    <div className="h-screen w-screen flex flex-col items-center justify-center bg-white relative px-4 sm:px-8 md:px-16">
+      <h1 className="text-3xl font-semibold font-playpen text-gray-700 mb-8">Login</h1>
       <form onSubmit={formik.handleSubmit} className="w-full max-w-sm space-y-4">
         <div>
           <input
             type="email"
             placeholder="Email"
             {...formik.getFieldProps('email')}
-            className={`w-full px-4 py-3 rounded-lg border ${
+            className={`w-full px-4 py-3 rounded-xl border ${
               formik.touched.email && formik.errors.email ? 'border-red-500' : 'border-gray-300'
-            } focus:ring-2 focus:ring-blue-500 outline-none`}
+            } focus:ring-2  outline-none`}
           />
           {formik.touched.email && formik.errors.email ? (
             <p className="text-red-500 text-sm mt-1">{formik.errors.email}</p>
           ) : null}
         </div>
         <div className="relative">
-            <input
-              type="password"
-              placeholder="Password"
-              {...formik.getFieldProps('password')}
-              className={`w-full px-4 py-3 pr-20 rounded-lg border ${
-                formik.touched.password && formik.errors.password ? 'border-red-500' : 'border-gray-300'
-              } focus:ring-2 focus:ring-blue-500 outline-none`}
-            />
-            <a 
-              href="/forgot-password" 
-              className="absolute right-4 top-1/2 transform -translate-y-1/2 text-blue-500 text-sm hover:underline"
-            >
-              Forget?
-            </a>
-            {formik.touched.password && formik.errors.password ? (
-              <p className="text-red-500 text-sm mt-1">{formik.errors.password}</p>
-            ) : null}
-          </div>
-
+          <input
+            type="password"
+            placeholder="Password"
+            {...formik.getFieldProps('password')}
+            className={`w-full px-4 py-3 pr-20 rounded-xl border ${
+              formik.touched.password && formik.errors.password ? 'border-red-500' : 'border-gray-300'
+            } focus:ring-2  outline-none`}
+          />
+          <a
+            href="/forgot-password"
+            className="absolute right-4 top-1/2 transform -translate-y-1/2 font-playpen  text-gray-600 text-sm hover:underline"
+          >
+            Forget?
+          </a>
+          {formik.touched.password && formik.errors.password ? (
+            <p className="text-red-500 text-sm mt-1">{formik.errors.password}</p>
+          ) : null}
+        </div>
+  
         <button
           type="submit"
-          className="w-full py-3 bg-blue-400 text-white font-semibold rounded-lg hover:bg-blue-700 transition-all"
+          className="w-full py-3 bg-blue-400 text-white font-semibold  font-playpen rounded-xl hover:bg-blue-700 transition-all"
         >
           Login
         </button>
@@ -77,37 +77,37 @@ const Login = () => {
         <hr className="flex-grow border-gray-300" />
       </div>
       <div className="flex w-full max-w-sm space-x-4">
-        <button className="flex items-center justify-center w-1/2 py-2 bg-white text-blue-600 border border-gray-300 font-semibold rounded-lg hover:bg-gray-100 transition-all">
+        <button className="flex items-center justify-center w-1/2 py-2 bg-white text-blue-600 border border-gray-300 font-semibold rounded-xl hover:bg-gray-100 transition-all">
           <FaFacebook className="mr-2" />
           Facebook
         </button>
-        <button className="flex items-center justify-center w-1/2 py-2 bg-white text-red-600 border border-gray-300 font-semibold rounded-lg hover:bg-gray-100 transition-all">
+        <button className="flex items-center justify-center w-1/2 py-2 bg-white text-red-600 border border-gray-300 font-semibold rounded-xl hover:bg-gray-100 transition-all">
           <FaGoogle className="mr-2" />
           Google
         </button>
       </div>
-      <p className="text-xs text-center text-gray-500 mt-4">
+      <p className="text-sm text-center text-gray-600 mt-4">
         By signing in to Duolingo, you agree to our{' '}
         <a href="/terms" className="underline hover:text-blue-700">
           Terms
         </a>{' '}
         and{' '}
-        <a href="/privacy" className="underline hover:text-blue-700">
+        <a href="/privacy" className="underline hover:text-blue-700  font-semibold">
           Privacy Policy
         </a>.
       </p>
-      <p className="text-xs text-center text-gray-500 mt-2">
-        This site is protected by reCAPTCHA Enterprise and the{' '}
+      <p className="text-sm text-center text-gray-600 mt-2">
+        This site is protected by reCAPTCHA Enterprise and the Google{' '}
         <a
           href="https://policies.google.com/privacy"
-          className="underline hover:text-blue-700"
+          className="underline hover:text-blue-700 font-semibold"
         >
-          Google Privacy Policy
+         Privacy Policy
         </a>{' '}
         and{' '}
         <a
           href="https://policies.google.com/terms"
-          className="underline hover:text-blue-700"
+          className="underline hover:text-blue-700 font-semibold"
         >
           Terms of Service
         </a>{' '}
@@ -115,9 +115,11 @@ const Login = () => {
       </p>
     </div>
   );
+  
 };
 
 export default Login;
+
 
 
 
