@@ -3,9 +3,12 @@ import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import { useContext } from 'react';
 import { AuthContext } from '../../Context/AuthContext';
+import { useNavigate } from 'react-router-dom';
+
 
 const SignUp = () => {
   const { register } = useContext(AuthContext);
+  const navigate = useNavigate();  
   const formik = useFormik({
     initialValues: {
       username: '',
@@ -27,9 +30,11 @@ const SignUp = () => {
         .min(1, 'Age must be a positive number')
         .required('Age is required'),
     }),
+    
     onSubmit: async (values) => {
       try {
         await register(values.username, values.email, values.password, values.age);
+        navigate('/learn')
       } catch (error) {
         console.error('Registration error', error);
       }
@@ -108,10 +113,9 @@ const SignUp = () => {
         {formik.touched.password && formik.errors.password && (
           <p className="text-red-500 text-sm">{formik.errors.password}</p>
         )}
-
         <button
           type="submit"
-          className="w-full py-3 bg-blue-400 text-white font-semibold rounded-xl hover:bg-blue-700 transition-all font-playpen "
+          className="w-full py-3 mt-4 bg-blue-400 text-white font-semibold rounded-xl hover:bg-blue-700 transition-all font-playpen "
         >
           Create Account
         </button>
