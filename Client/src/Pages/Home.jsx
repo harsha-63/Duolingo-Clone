@@ -2,7 +2,7 @@ import { Link } from 'react-router-dom';
 import Header from '../Components/Header';
 import { useEffect, useState } from 'react';
 import axios from 'axios';
-import { FaChevronLeft, FaChevronRight } from 'react-icons/fa'; // Importing arrow icons
+import { FaChevronLeft, FaChevronRight } from 'react-icons/fa'; 
 
 const HomePage = () => {
   const [languages, setLanguages] = useState([]);
@@ -16,6 +16,7 @@ const HomePage = () => {
         if (Array.isArray(response.data)) {
           setLanguages(response.data);
           setSelectedLanguage(response.data[0]);
+          console.log(selectedLanguage)
         } else {
           console.error("Error: The response is not an array");
         }
@@ -75,7 +76,6 @@ const HomePage = () => {
         </div>
       </main>
 
-      {/* Responsive footer: hidden on small screens */}
       <footer className="py-4 border-t border-gray-200 hidden sm:block">
         {loading ? (
           <p className="text-center">Loading languages...</p>

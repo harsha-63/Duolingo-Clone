@@ -11,9 +11,7 @@ const WelcomePage = () => {
     <div className="flex justify-center items-center flex-col mt-20 sm:mt-32 md:mt-40 lg:mt-48 xl:mt-60">
       <div className="flex flex-col sm:flex-row sm:space-x-6 items-center mb-24">
         <div className="relative text-lg mb-12 sm:mb-0 font-playpen font-semibold text-gray-700 bg-gray-100 p-4 rounded-lg border border-gray-300 shadow-md max-w-xs mx-auto">
-          <p>"Hi there, I'm Duo"</p>
-          
-          {/* Arrow on the right bottom corner */}
+          <p>&quot;Hi there, I&apos;m Duo&quot;</p>
           <div className="absolute right-[-10px] bottom-[-10px] w-0 h-0 border-t-8 border-l-8 border-b-8 border-r-0 border-transparent border-l-gray-100 "></div>
         </div>
         <img 

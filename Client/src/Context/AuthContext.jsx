@@ -1,4 +1,4 @@
-import { createContext, useState, useEffect } from "react";
+import { createContext, useState, } from "react";
 import axios from "axios";
 
 // eslint-disable-next-line react-refresh/only-export-components
@@ -8,7 +8,7 @@ export const AuthContext = createContext();
 const AuthContextProvider = ({ children }) => {
   const [user, setUser] = useState(() => {
     const storedUser = localStorage.getItem("user");
-    return storedUser ? JSON.parse(storedUser) : null;
+    return storedUser ? JSON.parse(storedUser) :[];
   });
 
   const login = async (email, password) => {
@@ -41,13 +41,6 @@ const AuthContextProvider = ({ children }) => {
     setUser(null);
     localStorage.removeItem("user");
   };
-
-  useEffect(() => {
-    const storedUser = localStorage.getItem("user");
-    if (storedUser) {
-      setUser(JSON.parse(storedUser));
-    }
-  }, []);
 
   return (
     <AuthContext.Provider value={{ user, setUser, login, register, logout }}>

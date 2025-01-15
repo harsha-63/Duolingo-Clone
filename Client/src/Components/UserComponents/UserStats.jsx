@@ -57,9 +57,36 @@ const UserStats = () => {
           <button className="w-96 h-12 px-4 py-2 bg-blue-500 text-white rounded-lg">Sign Up</button>
         </NavLink>
       </div>
-      <footer className="text-center mt-4 text-sm text-gray-500">
-        &copy; 2025 LuxeLiving. All rights reserved.
-      </footer>
+      <footer className="text-center mt-4 text-sm font-semibold text-gray-400 font-playpen">
+      <div className="space-x-10">
+        <NavLink to="/about" className="hover:text-blue-500">
+          About
+        </NavLink>
+        <NavLink to="/privacy" className="hover:text-blue-500">
+          Privacy
+        </NavLink>
+        <NavLink to="/career" className="hover:text-blue-500">
+          Career
+        </NavLink>
+        <NavLink to="/blog" className="hover:text-blue-500">
+          Blog
+        </NavLink>
+       
+      </div>
+      <div  className="space-x-10 mt-2">
+      <NavLink to="/blog" className="hover:text-blue-500">
+          store
+        </NavLink>
+        <NavLink to="/blog" className="hover:text-blue-500">
+          Terms
+        </NavLink>
+        <NavLink to="/blog" className="hover:text-blue-500">
+          Investors
+        </NavLink>
+      </div>
+      
+    </footer>
+
     </div>
   );
 };

@@ -6,7 +6,7 @@ import Header from '../Components/Header';
 const RegisterSection = () => {
   const [languages, setLanguages] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [isScrolled, setIsScrolled] = useState(false); // To track the scroll position
+  const [isScrolled, setIsScrolled] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -23,7 +23,7 @@ const RegisterSection = () => {
     };
     fetchLanguages();
 
-    // Add scroll event listener to track scroll position
+    
     const handleScroll = () => {
       if (window.scrollY > 0) {
         setIsScrolled(true);
@@ -33,8 +33,6 @@ const RegisterSection = () => {
     };
 
     window.addEventListener('scroll', handleScroll);
-    
-    // Cleanup the event listener when the component unmounts
     return () => {
       window.removeEventListener('scroll', handleScroll);
     };
@@ -51,12 +49,10 @@ const RegisterSection = () => {
 
   return (
     <div>
-      {/* Fixed Header with conditional shadow */}
       <div className={`fixed top-0 left-0 right-0 z-10 bg-white ${isScrolled ? 'shadow-md' : ''}`}>
         <Header />
       </div>
       
-      {/* Content with padding at the top */}
       <div className="pt-32 p-4 sm:px-8 md:px-16 lg:px-32 xl:px-72">
         <h1 className="text-2xl sm:text-3xl font-playpen mb-6 sm:mb-10 text-center text-gray-800 font-semibold">
           I want to learn...
