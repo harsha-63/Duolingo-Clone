@@ -5,6 +5,7 @@ import connectDb from './Config/db.js'
 import authRouter from './Routes/authRoute.js'
 import cookieParser from 'cookie-parser'
 import languageRouter from './Routes/PublicRoutes/languageRoute.js'
+import lessonRouter from './Routes/lessonRouter.js'
 
 dotenv.config()
 const app = express();
@@ -16,6 +17,7 @@ connectDb();
 
 app.use('/auth',authRouter);
 app.use('/public',languageRouter)
+app.use('/user',lessonRouter)
 
 app.get('/', (req, res) => {
   res.send('API is running....');

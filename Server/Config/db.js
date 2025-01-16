@@ -7,7 +7,10 @@ const connectDb = async () => {
   try {
     // connecting
     await mongoose.connect(`${process.env.MONGODB_URI}/duolingo`),{
-      connectTimeoutMS: 30000 }
+      useNewUrlParser: true,
+      useUnifiedTopology: true,
+      serverSelectionTimeoutMS: 5000, 
+      socketTimeoutMS: 45000,  }
   } catch (err) {
     console.log(err);
   }
