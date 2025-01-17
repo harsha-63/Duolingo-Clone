@@ -54,7 +54,7 @@ const UserStats = () => {
           <button className="w-96 h-12 px-4 py-2 bg-lime-500 text-white rounded-lg">Create Profile</button>
         </div>
         <NavLink to={'/isloggin'} className="flex justify-center mt-4">
-          <button className="w-96 h-12 px-4 py-2 bg-blue-500 text-white rounded-lg">Sign Up</button>
+          <button className="w-96 h-12 px-4 py-2 bg-blue-500 text-white rounded-lg">Sign In</button>
         </NavLink>
       </div>
       <footer className="text-center mt-4 text-sm font-semibold text-gray-400 font-playpen">

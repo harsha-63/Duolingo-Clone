@@ -1,7 +1,16 @@
+import { useContext, useState } from 'react'; // Import useState to manage the dropdown state
 import { NavLink } from 'react-router-dom';
 import logo from '../../assets/logo.jpg';
+import { AuthContext } from '../../Context/AuthContext';
 
 const Sidebar = () => {
+  const [isMoreOpen, setIsMoreOpen] = useState(false); 
+  const { user } = useContext(AuthContext);
+
+  const handleMoreClick = () => {
+    setIsMoreOpen(!isMoreOpen); 
+  };
+
   return (
     <div>
       <div className="mb-8">
@@ -128,21 +137,91 @@ const Sidebar = () => {
           </NavLink>
         </li>
         <li>
-          <NavLink
-            to="/more"
-            className={({ isActive }) =>
-              `flex items-center gap-3 px-3 py-2 mx-4 text-lg font-semibold font-playpen rounded-lg transition ${
-                isActive ? 'bg-blue-200 text-blue-400 border-2 border-blue-400' : 'text-gray-500 hover:bg-gray-200'
-              }`
-            }
-          >
-            <img
-              src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQDYIHLAcnQ30a5UmI7hvYOE_fTbjuJXk3t5Q&s"
-              alt="More"
-              className="w-8 h-8"
-            />
-            <span className="flex items-center">More</span>
-          </NavLink>
+          <div className="relative">
+            <div
+              onClick={handleMoreClick}
+              className="flex items-center gap-3 px-3 py-2 mx-4 text-lg font-semibold rounded-lg font-playpen cursor-pointer transition text-gray-500 hover:bg-gray-200"
+            >
+              <img
+                src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQDYIHLAcnQ30a5UmI7hvYOE_fTbjuJXk3t5Q&s"
+                alt="More"
+                className="w-8 h-8"
+              />
+              <span className="flex items-center">More</span>
+            </div>
+            {isMoreOpen && (
+              <ul className="absolute left-full top-0 space-y-2 ml-2 mt-2 p-4 font-semibold border border-gray-200 bg-white rounded-lg shadow-lg w-48">
+                <li className='font-semibold text-lg flex items-center gap-3  '>Schools</li>
+                {user.length === 0 ? (
+                  <>
+                    <li>
+                      <NavLink
+                        to="/createprofile"
+                        className={({ isActive }) =>
+                          `flex items-center gap-3 px-3 py-2 text-base rounded-lg font-playpen transition ${
+                            isActive ? 'bg-blue-200 text-blue-400 border-2 border-blue-400' : 'text-gray-500 hover:bg-gray-200'
+                          }`
+                        }
+                      >
+                        <span className="flex items-center">Create Profile</span>
+                      </NavLink>
+                    </li>
+                    <li>
+                      <NavLink
+                        to="/settings"
+                        className={({ isActive }) =>
+                          `flex items-center gap-3 px-3 py-2 text-base font-semibold rounded-lg font-playpen transition ${
+                            isActive ? 'bg-blue-200 text-blue-400 border-2 border-blue-400' : 'text-gray-500 hover:bg-gray-200'
+                          }`
+                        }
+                      >
+                        <span className="flex items-center">Settings</span>
+                      </NavLink>
+                    </li>
+                    <li>
+                      <NavLink
+                        to="/signin"
+                        className={({ isActive }) =>
+                          `flex items-center gap-3 px-3 py-2 text-base font-semibold rounded-lg font-playpen transition ${
+                            isActive ? 'bg-blue-200 text-blue-400 border-2 border-blue-400' : 'text-gray-500 hover:bg-gray-200'
+                          }`
+                        }
+                      >
+                        <span className="flex items-center">Sign In</span>
+                      </NavLink>
+                    </li>
+                  </>
+                ) : (
+                  <>
+                    <li>
+                      <NavLink
+                        to="/logout"
+                        className={({ isActive }) =>
+                          `flex items-center gap-3 px-3 py-2 text-lg font-semibold rounded-lg font-playpen transition ${
+                            isActive ? 'bg-blue-200 text-blue-400 border-2 border-blue-400' : 'text-gray-500 hover:bg-gray-200'
+                          }`
+                        }
+                      >
+                        <span className="flex items-center">Logout</span>
+                      </NavLink>
+                    </li>
+                    <li>
+                      <NavLink
+                        to="/settings"
+                        className={({ isActive }) =>
+                          `flex items-center gap-3 px-3 py-2 text-lg font-semibold rounded-lg font-playpen transition ${
+                            isActive ? 'bg-blue-200 text-blue-400 border-2 border-blue-400' : 'text-gray-500 hover:bg-gray-200'
+                          }`
+                        }
+                      >
+                        <span className="flex items-center">Settings</span>
+                      </NavLink>
+                    </li>
+                  </>
+                )}
+              </ul>
+            )}
+          </div>
         </li>
       </ul>
     </div>
@@ -150,6 +229,12 @@ const Sidebar = () => {
 };
 
 export default Sidebar;
+
+
+
+
+
+
 
 
 

@@ -3,18 +3,12 @@ import express from 'express';
 import dotenv from 'dotenv';
 import cors from 'cors';
 import cookieParser from 'cookie-parser';
-
-// Import database connection
 import connectDb from './Config/db.js';
-
-// Import models first
 import './Models/questionModel.js';
 import './Models/lessonModel.js';
-
-// Import routes
 import authRouter from './Routes/authRoute.js';
 import languageRouter from './Routes/PublicRoutes/languageRoute.js';
-import lessonRouter from './Routes/lessonRouter.js';
+import userRouter from './Routes/userRouter.js';
 
 dotenv.config();
 const app = express();
@@ -33,7 +27,7 @@ connectDb();
 // Routes
 app.use('/auth', authRouter);
 app.use('/public', languageRouter);
-app.use('/user', lessonRouter);
+app.use('/user', userRouter);
 
 app.get('/', (req, res) => {
   res.send('API is running....');
