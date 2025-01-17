@@ -29,18 +29,22 @@ const MainPage = () => {
 
   return (
     <div className="flex h-screen">
-      <div className="w-1/6">
-        <Sidebar />
-      </div>
-      <div className="w-3/6 p-6 bg-gray-100">
-        <Content activeContent={activeContent} />
-      </div>
-      <div className="w-2/6 p-6 bg-white">
-        <UserStats />
-       
-      </div>
+    {/* Sidebar (Fixed) */}
+    <div className="w-1/6 border-r border-gray-300">
+      <Sidebar />
     </div>
-  );
+
+    {/* Scrollable content section with hidden scrollbar */}
+    <div className="w-3/6 p-6  overflow-y-auto hide-scrollbar">
+      <Content activeContent={activeContent} />
+    </div>
+
+    {/* Scrollable user stats section with hidden scrollbar */}
+    <div className="w-2/6 p-6 bg-white overflow-y-auto hide-scrollbar">
+      <UserStats />
+    </div>
+  </div>
+);
 };
 
 export default MainPage;

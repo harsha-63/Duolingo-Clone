@@ -3,7 +3,10 @@ import mongoose from "mongoose";
 const sectionSchema = new mongoose.Schema({
   number: { type: Number, required: true },
   title: { type: String, required: true },
-  description: { type: String, default: "" }, 
+  color: {
+    type: String,
+    default: 'bg-lemongreen', 
+  },
   lessons: [{ type: mongoose.Schema.Types.ObjectId, ref: "Lesson" }]
 });
 

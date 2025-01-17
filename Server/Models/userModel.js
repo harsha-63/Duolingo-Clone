@@ -52,6 +52,11 @@ const userSchema = new mongoose.Schema({
     type: Number,
     default: 0
   },
+  language: {
+    type: String,
+    default: 'en',
+    enum: ['en', 'es', 'fr', 'de', 'it', 'pt']
+  },
   currentLesson: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Lesson',

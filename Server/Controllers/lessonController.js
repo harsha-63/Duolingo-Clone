@@ -1,6 +1,7 @@
 //SECTION FUNCTIONALITIES
 import Section from "../Models/sectionModel.js";
 import Lesson from "../Models/lessonModel.js";
+import mongoose from "mongoose";
 
 //get all sections
 
@@ -49,7 +50,7 @@ try {
 //LESSON FUNCTIONALITIES
 
 //get all lessons
-import mongoose from "mongoose";
+
 
 export const getLessonsInSection = async (req, res) => {
   try {
@@ -71,21 +72,26 @@ export const getLessonsInSection = async (req, res) => {
 
 
 //get lesson by id
-export const getLessonById = async (req, res) => {
-    try {
-      const lesson = await Lesson.findById(req.params.id).populate('questions'); 
-      
-      if (!lesson) {
-        return res.status(404).json({ message: 'Lesson not found' });
-      }
-      res.status(200).json(lesson);
-    } catch (error) {
-      console.error(`Error fetching lesson: ${error.message}`);
-      res.status(500).json({ message: "Failed to fetch lesson" });
-    }
-  };
-  
 
+export const getLessonById = async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+      return res.status(400).json({ message: 'Invalid lesson ID' });
+    }
+
+    const lesson = await Lesson.findById(id).populate('questions');
+
+    if (!lesson) {
+      return res.status(404).json({ message: 'Lesson not found' });
+    }
+    res.status(200).json(lesson);
+  } catch (error) {
+    console.error(`Error fetching lesson: ${error.message}`);
+    res.status(500).json({ message: 'Failed to fetch lesson' });
+  }
+};
 
 
 

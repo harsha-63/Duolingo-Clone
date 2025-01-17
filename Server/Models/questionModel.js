@@ -6,7 +6,7 @@ const questionSchema = new mongoose.Schema({
     required: true
   },
   options: {
-    type: [String],  // An array of strings
+    type: [String],  
     required: true
   },
   correctAnswer: {
@@ -20,5 +20,5 @@ const questionSchema = new mongoose.Schema({
   }
 });
 
-const Question = mongoose.models.Question || mongoose.model("Question", questionSchema);
+const Question = mongoose.model("Question", questionSchema);
 export default Question;
