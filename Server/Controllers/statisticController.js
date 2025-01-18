@@ -1,4 +1,4 @@
-import User from '../Models/user.js';
+import User from '../Models/userModel.js';
 
 export const reduceLife = async (req, res) => {
   const { userId } = req.body;
@@ -15,6 +15,7 @@ export const reduceLife = async (req, res) => {
     res.status(500).json({ message: 'Server error', error: error.message });
   }
 };
+
 
 export const refillLife = async (req, res) => {
   const { userId } = req.body;

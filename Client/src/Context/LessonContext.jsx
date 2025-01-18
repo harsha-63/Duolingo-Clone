@@ -5,73 +5,46 @@ import axios from 'axios';
 export const LessonContext = createContext();
 
 // eslint-disable-next-line react/prop-types
-const LessonProvider = ({ children }) => {
+ const LessonProvider = ({ children }) => {
   const [sections, setSections] = useState([]);
   const [lessons, setLessons] = useState([]);
-  const [questions, setQuestions] = useState([]);
-  const [activeLessonId, setActiveLessonId] = useState(null);
-  const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState(null);
+  // const [questions, setQuestions] = useState([]);
 
   useEffect(() => {
-    const fetchInitialData = async () => {
+    const fetchData = async () => {
       try {
-        setIsLoading(true);
-        // Fetch sections
         const sectionsResponse = await axios.get('http://localhost:4000/user/sections');
         setSections(sectionsResponse.data);
-       
+        console.log("sections:", sectionsResponse.data);
 
         if (sectionsResponse.data.length > 0) {
           const firstSectionId = sectionsResponse.data[0]._id;
-          const lessonsResponse = await axios.get(
-            `http://localhost:4000/user/sections/${firstSectionId}/lessons`
-          );
+          const lessonsResponse = await axios.get(`http://localhost:4000/user/sections/${firstSectionId}/lessons`);
           setLessons(lessonsResponse.data);
+          console.log("lessons:", lessonsResponse.data);
+
+          // if (lessonsResponse.data.length > 0) {
+          //   const firstLessonId = lessonsResponse.data[0]._id;
+          //   const questionsResponse = await axios.get(`http://localhost:4000/user/lesson/${firstLessonId}/questions`);
+          //   setQuestions(questionsResponse.data);
+          //   console.log("questions:", questionsResponse.data);  
+          // }
         }
       } catch (error) {
-        setError(error.message);
         console.error('Error fetching data:', error);
-      } finally {
-        setIsLoading(false);
       }
     };
 
-    fetchInitialData();
+    fetchData();
   }, []);
 
-  const setActiveLesson = async (lessonId) => {
-    try {
-      if (!lessonId) return;
-      
-      setActiveLessonId(lessonId);
-      const response = await axios.get(
-        `http://localhost:4000/user/lesson/${lessonId}/questions`
-      );
-      setQuestions(response.data);
-      console.log(response.data);
-    } catch (error) {
-      console.error('Error fetching lesson questions:', error);
-      setError(error.message);
-    }
-  };
-
   return (
-    <LessonContext.Provider
-      value={{
-        sections,
-        lessons,
-        questions,
-        activeLessonId,
-        setActiveLesson,
-        isLoading,
-        error
-      }}
-    >
+    <LessonContext.Provider value={{ sections, lessons }}>
       {children}
     </LessonContext.Provider>
   );
 };
+
 
 export default LessonProvider;
 

@@ -1,6 +1,6 @@
 import { useContext } from 'react';
 import { LessonContext } from '../Context/LessonContext';
-import { FaBook, FaStar } from 'react-icons/fa';  // Import FaStar
+import { FaBook, FaStar } from 'react-icons/fa'; 
 import { useNavigate } from 'react-router-dom';
 
 const LessonPage = () => {
@@ -50,8 +50,8 @@ const LessonPage = () => {
                   className="absolute text-center w-6 h-6 bg-transparent text-white rounded-full flex justify-center items-center font-semibold"
                   style={{
                     left: `${lessonIndex % 2 === 0 ? 40 : 200}px`,
-                    top: '-30px',  // Adjusting top value to position the star above the node
-                    zIndex: 10,    // Ensure the star is above the lesson node
+                    top: '-30px', 
+                    zIndex: 10,    
                   }}
                 >
                   <FaStar />
@@ -63,9 +63,9 @@ const LessonPage = () => {
                   style={{
                     left: `${lessonIndex % 2 === 0 ? 40 : 200}px`,
                     transition: 'all 0.3s ease',
-                    zIndex: 5,    // Ensure the lesson button is below the star icon
+                    zIndex: 5,   
                   }}
-                  onClick={() => handleLessonClick(lesson.id)}
+                  onClick={() => handleLessonClick(lesson._id)}
                 >
                   {lesson.name}
                 </div>

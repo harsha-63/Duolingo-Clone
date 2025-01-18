@@ -5,7 +5,7 @@ import HomePage from '../Pages/Home'
 import MainPage from '../Pages/MainPage'
 import RegisterSection from '../Pages/RegisterQues'
 import WelcomePage from '../Pages/Welcome'
-import Lesson from '../../../Server/Models/lessonModel'
+import LessonPage from '../Pages/LessonPage'
 
 
 
@@ -25,7 +25,7 @@ const AppRoutes = () => {
         <Route path="/shop" element={<MainPage/>} />
         <Route path="/sounds" element={<MainPage/>} />
         <Route path="/profile" element={<MainPage/>} />
-        <Route path="/lesson/:lessonId" element={<Lesson/>} />
+        <Route path="/lesson/:lessonId" element={<LessonPage/>} />
     </Routes>
     </>
   )
