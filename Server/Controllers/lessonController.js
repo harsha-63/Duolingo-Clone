@@ -2,6 +2,7 @@
 import Section from "../Models/sectionModel.js";
 import Lesson from "../Models/lessonModel.js";
 import mongoose from "mongoose";
+import User from "../Models/userModel.js";
 
 //get all sections
 export const getAllSections = async (req, res) => {
@@ -99,6 +100,121 @@ export const getQuestionsForLesson = async (req, res) => {
   } catch (error) {
     console.error(`Error fetching questions: ${error.message}`);
     res.status(500).json({ message: "Failed to fetch questions" });
+  }
+};
+
+
+export const startLesson = async (req, res) => {
+  const { userId, lessonId } = req.body;
+  try {
+    const user = await User.findById(userId);
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+
+    user.currentLesson = lessonId;
+    await user.save();
+
+    res.status(200).json({
+      message: 'Lesson started',
+      currentLesson: lessonId
+    });
+  } catch (error) {
+    res.status(500).json({ message: 'Server error', error: error.message });
+  }
+};
+
+export const completeLesson = async (req, res) => {
+  const { userId, lessonId } = req.body;
+  try {
+    const user = await User.findById(userId);
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+
+    // Check if lesson is already completed
+    if (user.completedLessons.includes(lessonId)) {
+      return res.status(400).json({ message: 'Lesson already completed' });
+    }
+
+    // Update user progress
+    user.completedLessons.push(lessonId);
+    user.lessonsCompleted += 1;
+    user.xpPoints += 10; // Add XP for completing lesson
+    user.currentLesson = null; // Clear current lesson
+
+    // Level up logic
+    if (user.xpPoints >= user.level * 100) { // Example: each level requires level * 100 XP
+      user.level += 1;
+    }
+
+    // Update streak if it's their first lesson of the day
+    const lastActivity = user.updatedAt;
+    const today = new Date();
+    if (lastActivity.getDate() !== today.getDate()) {
+      user.streak += 1;
+    }
+
+    await user.save();
+
+    res.status(200).json({
+      message: 'Lesson completed',
+      progress: {
+        lessonsCompleted: user.lessonsCompleted,
+        xpPoints: user.xpPoints,
+        level: user.level,
+        streak: user.streak
+      }
+    });
+  } catch (error) {
+    res.status(500).json({ message: 'Server error', error: error.message });
+  }
+};
+
+
+export const getUserProgress = async (req, res) => {
+  const { userId } = req.params;
+  try {
+    const user = await User.findById(userId)
+      .populate('completedLessons')
+      .populate('currentLesson')
+      .select('lessonsCompleted xpPoints level streak completedLessons currentLesson');
+
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+
+    res.status(200).json({
+      progress: {
+        lessonsCompleted: user.lessonsCompleted,
+        xpPoints: user.xpPoints,
+        level: user.level,
+        streak: user.streak,
+        completedLessons: user.completedLessons,
+        currentLesson: user.currentLesson
+      }
+    });
+  } catch (error) {
+    res.status(500).json({ message: 'Server error', error: error.message });
+  }
+};
+
+export const resetLessonProgress = async (req, res) => {
+  const { userId } = req.body;
+  try {
+    const user = await User.findById(userId);
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+
+    user.currentLesson = null;
+    await user.save();
+
+    res.status(200).json({
+      message: 'Lesson progress reset'
+    });
+  } catch (error) {
+    res.status(500).json({ message: 'Server error', error: error.message });
   }
 };
 
