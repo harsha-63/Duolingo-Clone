@@ -1,10 +1,11 @@
 import { useState, useEffect, useContext } from "react";
-import { NavLink, useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { FaTimes } from "react-icons/fa";
-import { HeartCrack } from "lucide-react";
 import axios from "axios";
 import { AuthContext } from "../Context/AuthContext";
 import { UserStatisticsContext } from "../Context/StaticsticContext";
+import IncorrectAnswerModal from "../Modal/IncorrectAnswer";
+import ZeroLivesModal from "../Modal/ZeroLife";
 
 // Progress Bar Component
 // eslint-disable-next-line react/prop-types
@@ -17,56 +18,6 @@ const ProgressBar = ({ current, total }) => (
   </div>
 );
 
-// Incorrect Answer Modal Component
-// eslint-disable-next-line react/prop-types
-const IncorrectAnswerModal = ({ onClose, correctAnswer }) => {
-  return (
-    <div className="fixed inset-0 flex items-center justify-center bg-black/60 z-50">
-      <div className="bg-white rounded-2xl shadow-xl max-w-md w-full mx-4 overflow-hidden">
-        {/* Header with heart icon */}
-        <div className="bg-red-50 p-6 flex flex-col items-center">
-          <div className="bg-red-100 rounded-full p-4 mb-4">
-            <HeartCrack className="w-10 h-10 text-red-500" />
-          </div>
-          <h2 className="text-2xl font-bold text-gray-800 mb-2 font-playpen">
-            Incorrect
-          </h2>
-        </div>
-
-        {/* Content */}
-        <div className="p-6">
-          <div className="mb-6">
-            <p className="text-gray-600 mb-3 text-center">
-              The correct answer was:
-            </p>
-            <div className="bg-green-50 border border-green-100 rounded-xl p-4">
-              <p className="text-green-800 font-medium text-center">
-                {correctAnswer}
-              </p>
-            </div>
-          </div>
-
-          {/* Buttons */}
-          <div className="space-y-3">
-            <button
-              onClick={onClose}
-              className="w-full py-3 bg-red-500 hover:bg-red-600 text-white font-bold rounded-2xl transition-colors"
-            >
-              Got it
-            </button>
-            <button
-              onClick={onClose}
-              className="w-full py-3 bg-gray-100 hover:bg-gray-200 text-gray-700 font-bold rounded-2xl transition-colors"
-            >
-              Review lesson
-            </button>
-          </div>
-        </div>
-      </div>
-    </div>
-  );
-};
-
 function LessonPage() {
   const { lessonId } = useParams();
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
@@ -77,6 +28,8 @@ function LessonPage() {
   const [hasChecked, setHasChecked] = useState(false);
   const [isCorrect, setIsCorrect] = useState(false);
   const [showModal, setShowModal] = useState(false);
+  const [showZeroLivesModal, setShowZeroLivesModal] = useState(false);
+  const navigate = useNavigate();
   const { user } = useContext(AuthContext);
   const { userStats, reduceLife, rewardGems } = useContext(UserStatisticsContext);
 
@@ -101,6 +54,20 @@ function LessonPage() {
       fetchLessonQuestions();
     }
   }, [lessonId]);
+
+  useEffect(() => {
+    if (userStats.life <= 0) {
+      setShowZeroLivesModal(true);
+    }
+  }, [userStats.life]);
+
+  const handleRestoreLives = () => {
+    setShowZeroLivesModal(false);
+  };
+
+  const handleReturnHome = () => {
+    navigate('/learn');
+  };
 
   const currentQuestion = lessonQuestions[currentQuestionIndex];
   const isLessonComplete = currentQuestionIndex >= lessonQuestions.length;
@@ -154,7 +121,7 @@ function LessonPage() {
     if (isLessonComplete) {
       handleLessonComplete();
     }
-  }, []);
+  }, [isLessonComplete]);
 
   const closeModal = () => setShowModal(false);
 
@@ -215,11 +182,12 @@ function LessonPage() {
             <button className="mt-6 px-10 py-4 bg-gray-300 text-white rounded-lg text-lg">
               Review Lesson
             </button>
-            <NavLink to="/learn">
-              <button className="mt-6 px-10 p-4 font-playpen bg-lime-500 text-white rounded-lg text-lg">
-                Continue
-              </button>
-            </NavLink>
+            <button 
+              onClick={handleReturnHome}
+              className="mt-6 px-10 p-4 font-playpen bg-lime-500 text-white rounded-lg text-lg"
+            >
+              Continue
+            </button>
           </div>
         </div>
       </div>
@@ -316,14 +284,16 @@ function LessonPage() {
           correctAnswer={currentQuestion.options[0].text}
         />
       )}
+      {showZeroLivesModal && (
+        <ZeroLivesModal 
+          onRestoreLives={handleRestoreLives}
+          onReturnHome={handleReturnHome}
+        />
+      )}
     </div>
   );
 }
 
 export default LessonPage;
-
-
-
-
 
 

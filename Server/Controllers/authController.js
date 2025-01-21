@@ -66,7 +66,8 @@ const createToken = (id) => {
               flagUrl: user.flagUrl, 
               xp: user.xp,            
               gems: user.gems,       
-              life: user.life         
+              life: user.life ,
+              streak: user.streak       
             },
             accessToken,
           
