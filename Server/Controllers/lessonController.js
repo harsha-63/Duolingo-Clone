@@ -132,28 +132,27 @@ export const completeLesson = async (req, res) => {
       return res.status(404).json({ message: 'User not found' });
     }
 
-    // Check if lesson is already completed
+    
     if (user.completedLessons.includes(lessonId)) {
       return res.status(400).json({ message: 'Lesson already completed' });
     }
 
-    // Update user progress
+  
     user.completedLessons.push(lessonId);
     user.lessonsCompleted += 1;
-    user.xpPoints += 10; // Add XP for completing lesson
-    user.currentLesson = null; // Clear current lesson
+    user.xpPoints += 10; 
+    user.currentLesson = null; 
 
-    // Level up logic
-    if (user.xpPoints >= user.level * 100) { // Example: each level requires level * 100 XP
-      user.level += 1;
-    }
+  
+    // if (user.xpPoints >= user.level * 100) { 
+    //   user.level += 1;
+    // }
 
-    // Update streak if it's their first lesson of the day
-    const lastActivity = user.updatedAt;
-    const today = new Date();
-    if (lastActivity.getDate() !== today.getDate()) {
-      user.streak += 1;
-    }
+    // const lastActivity = user.updatedAt;
+    // const today = new Date();
+    // if (lastActivity.getDate() !== today.getDate()) {
+    //   user.streak += 1;
+    // }
 
     await user.save();
 
@@ -172,32 +171,7 @@ export const completeLesson = async (req, res) => {
 };
 
 
-export const getUserProgress = async (req, res) => {
-  const { userId } = req.params;
-  try {
-    const user = await User.findById(userId)
-      .populate('completedLessons')
-      .populate('currentLesson')
-      .select('lessonsCompleted xpPoints level streak completedLessons currentLesson');
 
-    if (!user) {
-      return res.status(404).json({ message: 'User not found' });
-    }
-
-    res.status(200).json({
-      progress: {
-        lessonsCompleted: user.lessonsCompleted,
-        xpPoints: user.xpPoints,
-        level: user.level,
-        streak: user.streak,
-        completedLessons: user.completedLessons,
-        currentLesson: user.currentLesson
-      }
-    });
-  } catch (error) {
-    res.status(500).json({ message: 'Server error', error: error.message });
-  }
-};
 
 export const resetLessonProgress = async (req, res) => {
   const { userId } = req.body;

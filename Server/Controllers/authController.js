@@ -67,7 +67,8 @@ const createToken = (id) => {
               xp: user.xp,            
               gems: user.gems,       
               life: user.life ,
-              streak: user.streak       
+              streak: user.streak,
+              completedLessons:user.completedLessons    
             },
             accessToken,
           

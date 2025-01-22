@@ -1,6 +1,6 @@
 
 import express from 'express';
-import { getAllSections,getSectionById,getLessonsInSection,getLessonById,getQuestionsForLesson,startLesson,resetLessonProgress,completeLesson,getUserProgress } from '../Controllers/lessonController.js';
+import { getAllSections,getSectionById,getLessonsInSection,getLessonById,getQuestionsForLesson,startLesson,resetLessonProgress,completeLesson } from '../Controllers/lessonController.js';
 import { reduceLife, refillLife, rewardGems } from '../Controllers/statisticController.js';
 
 
@@ -21,7 +21,6 @@ userRouter
 
 .post('/lesson/start', startLesson)
 .post('/lesson/complete', completeLesson)
-.get('/user/progress/:userId', getUserProgress)
 .post('/lesson/reset', resetLessonProgress)
 
 

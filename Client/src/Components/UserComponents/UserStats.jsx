@@ -25,20 +25,20 @@ const UserStats = () => {
     )
   );
   return (
-    <div className="max-w-4xl mx-auto p-4">
+    <div className="max-w-4xl mx-auto p-4 pr-16">
       {/* Stats Bar */}
       <div className="flex items-center justify-between  p-4 mb-6">
         {/* Flag */}
         <div className="relative">
           <img
-          src={user ? 'path/to/flag1.png' : 'path/to/flag2.png'}
-            alt="Language Flag"
+            src={user?.language || 'path/to/defaultFlag.png'}
+            alt={user?.language || 'Language Flag'}
             className="w-8 h-6"
             onMouseEnter={() => setHoveredStat('flag')}
             onMouseLeave={() => setHoveredStat(null)}
           />
           <Tooltip isVisible={hoveredStat === 'flag'}>
-            <p className="text-gray-700">Your learning language</p>
+            <p className="text-gray-700">Your learning language: {user?.language || 'Not set'}</p>
           </Tooltip>
         </div>
 
@@ -54,7 +54,8 @@ const UserStats = () => {
               alt="Streak"
               className="w-6 h-6"
             />
-            <span className="text-gray-700">{user ? user.streak : 0}</span>
+           <span className="text-gray-700">{user?.streak || 0}</span>
+
           </div>
           <Tooltip isVisible={showStreak}>
             <h3 className="text-lg font-bold mb-2">{user.streak} day streak</h3>
@@ -106,7 +107,8 @@ const UserStats = () => {
               alt="Gems"
               className="w-6 h-6"
             />
-            <span className="text-blue-500">{user ? user.gems : 0}</span>
+            <span className="text-blue-500">{user?.gems || 500}</span>
+
           </div>
           <Tooltip isVisible={showGems}>
             <h3 className="text-lg font-bold mb-2">Gems</h3>
@@ -127,7 +129,8 @@ const UserStats = () => {
               alt="Hearts"
               className="w-6 h-6"
             />
-            <span className="text-red-500">{user ? user.life : 5}</span>
+         <span className="text-red-500">{user?.life ?? 5}</span>
+
           </div>
           <Tooltip isVisible={showHearts}>
             <h3 className="text-lg font-bold mb-2">Hearts</h3>
@@ -178,15 +181,15 @@ const UserStats = () => {
       </div>
 
       {/* Create Profile Section */}
-      <div className="bg-white py-6 px-4 rounded-2xl shadow-md mb-6">
+      <div className="bg-white py-6  rounded-2xl shadow-md mb-6">
         <h2 className="text-lg font-semibold text-gray-700 text-center">
           Create a profile to save your progress!
         </h2>
-        <div className="flex flex-col items-center gap-4 mt-4">
-          <button className="w-96 h-12 bg-lime-500 text-white rounded-lg hover:bg-lime-600 transition-colors">
+        <div className="flex flex-col items-center gap-4 mt-4 ">
+          <button className="w-80 h-12 bg-lime-500 text-white rounded-lg hover:bg-lime-600 transition-colors">
             Create Profile
           </button>
-          <NavLink to="/isloggin" className="w-96">
+          <NavLink to="/isloggin" className="w-80">
             <button className="w-full h-12 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors">
               Sign In
             </button>

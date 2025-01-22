@@ -1,4 +1,4 @@
-import { useState, useEffect, useContext } from "react";
+import { useState, useEffect, useContext, useCallback } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { FaTimes } from "react-icons/fa";
 import axios from "axios";
@@ -7,7 +7,6 @@ import { UserStatisticsContext } from "../Context/StaticsticContext";
 import IncorrectAnswerModal from "../Modal/IncorrectAnswer";
 import ZeroLivesModal from "../Modal/ZeroLife";
 
-// Progress Bar Component
 // eslint-disable-next-line react/prop-types
 const ProgressBar = ({ current, total }) => (
   <div className="w-full bg-gray-200 h-3 rounded-full overflow-hidden">
@@ -20,7 +19,10 @@ const ProgressBar = ({ current, total }) => (
 
 function LessonPage() {
   const { lessonId } = useParams();
-  const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
+  const [currentQuestionIndex, setCurrentQuestionIndex] = useState(() => {
+    const saved = localStorage.getItem(`lesson_${lessonId}_progress`);
+    return saved ? parseInt(saved, 10) : 0;
+  });
   const [lessonQuestions, setLessonQuestions] = useState([]);
   const [selectedOption, setSelectedOption] = useState("");
   const [isLoading, setIsLoading] = useState(true);
@@ -29,45 +31,60 @@ function LessonPage() {
   const [isCorrect, setIsCorrect] = useState(false);
   const [showModal, setShowModal] = useState(false);
   const [showZeroLivesModal, setShowZeroLivesModal] = useState(false);
+  const [lessonCompleted, setLessonCompleted] = useState(false);
+  const [isStatsLoading, setIsStatsLoading] = useState(true);
+  
   const navigate = useNavigate();
   const { user } = useContext(AuthContext);
-  const { userStats, reduceLife, rewardGems } = useContext(UserStatisticsContext);
+  const { userStats, reduceLife, refillLife, rewardGems } = useContext(UserStatisticsContext);
 
-  useEffect(() => {
-    const fetchLessonQuestions = async () => {
-      try {
-        setIsLoading(true);
-        const response = await axios.get(
-          `http://localhost:4000/user/lesson/${lessonId}/questions`
-        );
-        setLessonQuestions(response.data);
-        setError(null);
-      } catch (err) {
-        setError("Failed to load lesson questions");
-        console.error(err);
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
-    if (lessonId && lessonId !== "undefined") {
-      fetchLessonQuestions();
+  const fetchLessonQuestions = useCallback(async () => {
+    try {
+      setIsLoading(true);
+      const response = await axios.get(
+        `http://localhost:4000/user/lesson/${lessonId}/questions`
+      );
+      setLessonQuestions(response.data);
+      setError(null);
+    } catch (err) {
+      setError("Failed to load lesson questions");
+      console.error(err);
+    } finally {
+      setIsLoading(false);
     }
   }, [lessonId]);
 
   useEffect(() => {
-    if (userStats.life <= 0) {
-      setShowZeroLivesModal(true);
+    if (lessonId && lessonId !== "undefined") {
+      fetchLessonQuestions();
     }
-  }, [userStats.life]);
+  }, [lessonId, fetchLessonQuestions]);
 
-  const handleRestoreLives = () => {
-    setShowZeroLivesModal(false);
+  // Save progress to localStorage
+  useEffect(() => {
+    localStorage.setItem(`lesson_${lessonId}_progress`, currentQuestionIndex.toString());
+  }, [currentQuestionIndex, lessonId]);
+
+  const handleRestoreLives = async () => {
+    if (userStats.life > 0) return;
+    
+    try {
+      await refillLife();
+      setShowZeroLivesModal(false);
+    } catch (error) {
+      alert.error('Failed to refill lives:', error);
+    }
   };
 
   const handleReturnHome = () => {
+    localStorage.removeItem(`lesson_${lessonId}_progress`);
     navigate('/learn');
   };
+  useEffect(() => {
+    if (userStats !== undefined) {
+      setIsStatsLoading(false);
+    }
+  }, [userStats]);
 
   const currentQuestion = lessonQuestions[currentQuestionIndex];
   const isLessonComplete = currentQuestionIndex >= lessonQuestions.length;
@@ -79,7 +96,8 @@ function LessonPage() {
   };
 
   const handleCheck = async () => {
-    if (isLessonComplete) return;
+    if (!selectedOption || isLessonComplete) return;
+    
     setHasChecked(true);
     const isAnswerCorrect = selectedOption === currentQuestion.options[0].text;
     setIsCorrect(isAnswerCorrect);
@@ -87,19 +105,31 @@ function LessonPage() {
     if (!isAnswerCorrect) {
       try {
         await reduceLife();
-        setShowModal(true);
+        if (userStats.life <= 1) {
+          setShowZeroLivesModal(true);
+        } else {
+          setShowModal(true);
+        }
       } catch (error) {
         console.error('Failed to reduce life:', error);
+        setShowModal(true);
       }
     }
   };
 
   const handleNext = () => {
     if (!isLessonComplete) {
-      setCurrentQuestionIndex((prev) => prev + 1);
+      const nextIndex = currentQuestionIndex + 1;
+      setCurrentQuestionIndex(nextIndex);
       setSelectedOption("");
       setHasChecked(false);
       setIsCorrect(false);
+      setShowModal(false);
+      
+      // Check if this was the last question
+      if (nextIndex === lessonQuestions.length) {
+        setLessonCompleted(true);
+      }
     }
   };
 
@@ -109,19 +139,23 @@ function LessonPage() {
     }
   };
 
-  const handleLessonComplete = async () => {
+  const handleLessonComplete = useCallback(async () => {
+    if (!lessonCompleted) return;
+    
     try {
       await rewardGems();
+      // Clear progress after successful completion
+      localStorage.removeItem(`lesson_${lessonId}_progress`);
     } catch (error) {
       console.error('Failed to reward gems:', error);
     }
-  };
+  }, [rewardGems, lessonCompleted, lessonId]);
 
   useEffect(() => {
-    if (isLessonComplete) {
+    if (lessonCompleted) {
       handleLessonComplete();
     }
-  }, [isLessonComplete]);
+  }, [lessonCompleted, handleLessonComplete]);
 
   const closeModal = () => setShowModal(false);
 
@@ -198,7 +232,10 @@ function LessonPage() {
     <div className="mx-auto">
       <div className="mb-4 px-96 mt-10">
         <div className="flex items-center justify-between mb-4">
-          <button className="p-3 hover:bg-gray-100 rounded-full">
+          <button 
+            onClick={handleReturnHome}
+            className="p-3 hover:bg-gray-100 rounded-full"
+          >
             <FaTimes className="text-2xl text-gray-500 cursor-pointer" />
           </button>
           <ProgressBar
@@ -210,8 +247,14 @@ function LessonPage() {
               src="https://d35aaqx5ub95lt.cloudfront.net/images/hearts/8fdba477c56a8eeb23f0f7e67fdec6d9.svg"
               alt="Heart Icon"
               className="w-8 h-8"
-            />
-            <span className="font-bold text-xl">{userStats.life}</span>
+                  />
+             <span className="font-bold text-red-400 text-lg">
+              {isStatsLoading ? (
+                <span className="animate-pulse">...</span>
+              ) : (
+                userStats.life
+              )}
+            </span>
           </div>
         </div>
       </div>

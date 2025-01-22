@@ -105,59 +105,7 @@ const LessonProvider = ({ children }) => {
     return userProgress.lessonsCompleted.includes(lessonId);
   };
 
-  // Get lesson progress percentage for a section
-  const getSectionProgress = (sectionId) => {
-    const sectionLessons = lessons.filter(lesson => lesson.sectionId === sectionId);
-    if (sectionLessons.length === 0) return 0;
-
-    const completedLessonsInSection = sectionLessons.filter(lesson => 
-      userProgress.lessonsCompleted.includes(lesson._id)
-    ).length;
-
-    return Math.round((completedLessonsInSection / sectionLessons.length) * 100);
-  };
-
-  // Update user XP
-  // const updateXP = async (xpAmount) => {
-  //   try {
-  //     setLoading(true);
-  //     const userId = localStorage.getItem('userId');
-  //     const response = await axios.post('http://localhost:4000/api/user/', {
-  //       userId,
-  //       xpAmount
-  //     });
-
-  //     setUserProgress(prev => ({
-  //       ...prev,
-  //       xpPoints: response.data.xpPoints,
-  //       level: response.data.level
-  //     }));
-
-  //     return response.data;
-  //   } catch (error) {
-  //     setError(error.response?.data?.message || 'Failed to update XP');
-  //     throw error;
-  //   } finally {
-  //     setLoading(false);
-  //   }
-  // };
-
-  // Get next available lesson
-  const getNextLesson = () => {
-    const uncompletedLessons = lessons.filter(lesson => 
-      !userProgress.lessonsCompleted.includes(lesson._id)
-    );
-    return uncompletedLessons[0] || null;
-  };
-
-  // Check if a lesson is available (previous lesson completed)
-  const isLessonAvailable = (lessonId) => {
-    const currentLesson = lessons.find(lesson => lesson._id === lessonId);
-    if (!currentLesson.prerequisiteLesson) return true;
-
-    return userProgress.lessonsCompleted.includes(currentLesson.prerequisiteLesson);
-  };
-
+ 
   const value = {
     sections,
     lessons,
@@ -167,10 +115,6 @@ const LessonProvider = ({ children }) => {
     startLesson,
     completeLesson,
     isLessonCompleted,
-    getSectionProgress,
-    // updateXP,
-    getNextLesson,
-    isLessonAvailable
   };
 
   return (
@@ -181,5 +125,3 @@ const LessonProvider = ({ children }) => {
 };
 
 export default LessonProvider;
-
-
