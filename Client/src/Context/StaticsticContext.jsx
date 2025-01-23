@@ -1,6 +1,7 @@
 import { createContext, useState, useEffect, useCallback } from 'react';
 import axios from 'axios';
 
+
 // eslint-disable-next-line react-refresh/only-export-components
 export const UserStatisticsContext = createContext();
 
@@ -74,7 +75,7 @@ const UserStatisticsProvider = ({ children }) => {
   }, [getUserId, updateStats]);
 
   const refillLife = useCallback(async () => {
-    if (userStats.life > 0) return; // Only allow refill if life is 0
+    if (userStats.life > 0) return; 
     
     setLoading(true);
     setError(null);
@@ -122,6 +123,10 @@ const UserStatisticsProvider = ({ children }) => {
       setLoading(false);
     }
   }, [getUserId, updateStats]);
+
+ 
+    
+
 
   useEffect(() => {
     const handleStorageChange = () => {

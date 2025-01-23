@@ -40,87 +40,102 @@ const Learn = () => {
     return { x, y };
   };
 
+  const determineNextAvailableLesson = (lessons) => {
+    const completedLessons = user?.completedLessons || [];
+    return lessons.findIndex(lesson => !completedLessons.includes(lesson._id));
+  };
+
   return (
     <div className="max-w-7xl mx-auto p-6">
-      {sections.map((section, sectionIndex) => (
-        <div key={section.id} className="mb-32 relative mx-3">
-          <div
-            className={`flex justify-between items-center mb-10 p-4 border-2 rounded-lg ${getColorClass(
-              section.color
-            )}`}
-          >
-            <div className="flex flex-col space-y-2 p-1">
-              <span className="text-lg font-semibold text-white">Section {section.number}</span>
-              <h2 className="text-2xl font-bold font-playpen text-white">{section.title}</h2>
-            </div>
-            <div className="flex items-center space-x-2 border-l-2 border-white pl-4">
-              <span className="text-lg font-semibold text-white font-playpen">Guide Book</span>
-              <button className="text-white p-3 rounded-full transition-colors" title="Guide Book">
-                <FaBook />
-              </button>
-            </div>
-          </div>
+      {sections.map((section, sectionIndex) => {
+        const nextAvailableLessonIndex = determineNextAvailableLesson(section.lessons);
 
-          <div
-            className="relative mt-12"
-            style={{
-              height: `${section.lessons.length * 120}px`,
-              marginLeft: '160px',
-            }}
-          >
+        return (
+          <div key={section.id} className="mb-32 relative mx-3">
             <div
-              className={`absolute ${sectionIndex % 2 === 0 ? 'right-0' : 'left-0'}`}
+              className={`flex justify-between items-center mb-10 p-4 border-2 rounded-lg ${getColorClass(
+                section.color
+              )}`}
+            >
+              <div className="flex flex-col space-y-2 p-1">
+                <span className="text-lg font-semibold text-white">Section {section.number}</span>
+                <h2 className="text-2xl font-bold font-playpen text-white">{section.title}</h2>
+              </div>
+              <div className="flex items-center space-x-2 border-l-2 border-white pl-4">
+                <span className="text-lg font-semibold text-white font-playpen">Guide Book</span>
+                <button className="text-white p-3 rounded-full transition-colors" title="Guide Book">
+                  <FaBook />
+                </button>
+              </div>
+            </div>
+
+            <div
+              className="relative mt-12"
               style={{
-                top: '50%',
-                transform: 'translateY(-50%)',
+                height: `${section.lessons.length * 120}px`,
+                marginLeft: '160px',
               }}
             >
-              <img src={section.character} alt="Section Character" className="w-96 h-96" />
-            </div>
+              <div
+                className={`absolute ${sectionIndex % 2 === 0 ? 'right-0' : 'left-0'}`}
+                style={{
+                  top: '50%',
+                  transform: 'translateY(-50%)',
+                }}
+              >
+                <img src={section.character} alt="Section Character" className="w-96 h-96" />
+              </div>
 
-            {section.lessons.map((lesson, lessonIndex) => {
-              const position = getCirclePosition(
-                lessonIndex,
-                section.lessons.length,
-                sectionIndex % 2 === 0
-              );
+              {section.lessons.map((lesson, lessonIndex) => {
+                const position = getCirclePosition(
+                  lessonIndex,
+                  section.lessons.length,
+                  sectionIndex % 2 === 0
+                );
 
-              const isLastLesson = lessonIndex === section.lessons.length - 1;
-              const isCompleted = user?.completedLessons?.includes(lesson._id);
+                const isLastLesson = lessonIndex === section.lessons.length - 1;
+                const isCompleted = user?.completedLessons?.includes(lesson._id);
+                const isNextAvailableLesson = lessonIndex === nextAvailableLessonIndex;
 
-              return (
-                <div
-                  key={lesson.id}
-                  className="absolute"
-                  style={{
-                    left: `${position.x}px`,
-                    top: `${position.y}px`,
-                    transition: 'all 0.3s ease',
-                  }}
-                >
+                const bgColorClass = isCompleted 
+                  ? getColorClass(section.color)
+                  : isNextAvailableLesson
+                  ? getColorClass(section.color)
+                  : 'bg-gray-300 opacity-50';
+
+                return (
                   <div
-                    className={`relative text-center w-20 h-20 ${getColorClass(
-                      section.color
-                    )} text-white rounded-full 
-                             flex flex-col justify-center items-center gap-1 font-semibold hover:bg-opacity-80 
-                             transition-all cursor-pointer shadow-md hover:shadow-lg`}
-                    onClick={() => handleLessonClick(lesson._id)}
+                    key={lesson.id}
+                    className="absolute"
+                    style={{
+                      left: `${position.x}px`,
+                      top: `${position.y}px`,
+                      transition: 'all 0.3s ease',
+                    }}
                   >
-                    {isLastLesson ? (
-                      <FaTrophy className="text-yellow-400 text-5xl" />
-                    ) : isCompleted ? (
-                      <FaCheckCircle className="text-white text-5xl" />
-                    ) : (
-                      <FaStar className="text-white text-5xl" />
-                    )}
-                    <span className="text-sm">{lesson.name}</span>
+                    <div
+                      className={`relative text-center w-20 h-20 ${bgColorClass} 
+                        text-white rounded-full flex flex-col justify-center 
+                        items-center gap-1 font-semibold hover:bg-opacity-80 
+                        transition-all cursor-pointer shadow-md hover:shadow-lg`}
+                      onClick={() => handleLessonClick(lesson._id)}
+                    >
+                      {isLastLesson ? (
+                        <FaTrophy className="text-yellow-400 text-5xl" />
+                      ) : isCompleted ? (
+                        <FaCheckCircle className="text-white text-5xl" />
+                      ) : (
+                        <FaStar className="text-white text-5xl" />
+                      )}
+                      <span className="text-sm">{lesson.name}</span>
+                    </div>
                   </div>
-                </div>
-              );
-            })}
+                );
+              })}
+            </div>
           </div>
-        </div>
-      ))}
+        );
+      })}
     </div>
   );
 };

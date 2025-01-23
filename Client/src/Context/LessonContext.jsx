@@ -1,4 +1,4 @@
-import { createContext, useState, useEffect } from 'react';
+import { createContext, useState, useEffect,useCallback} from 'react';
 import axios from 'axios';
 
 // eslint-disable-next-line react-refresh/only-export-components
@@ -6,17 +6,32 @@ export const LessonContext = createContext();
 
 // eslint-disable-next-line react/prop-types
 const LessonProvider = ({ children }) => {
+  const initialUserPrograss = () => {
+    try {
+      const user = JSON.parse(localStorage.getItem('user'));
+      return {
+        completedLessons: typeof user?.completedLessons === "object" ? user.completedLessons:[]
+      };
+    } catch {
+      return { completedLessons:[] };
+    }
+  };
   const [sections, setSections] = useState([]);
   const [lessons, setLessons] = useState([]);
-  const [userProgress, setUserProgress] = useState({
-    lessonsCompleted: [],
-    currentLesson: null,
-    xpPoints: 0,
-    level: 1,
-    streak: 0
-  });
+  const [userProgress, setUserProgress] = useState(initialUserPrograss)
+  
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+  
+    const getUserId = useCallback(() => {
+      try {
+        const user = JSON.parse(localStorage.getItem('user'));
+        return user?.id || null;
+      } catch {
+        return null;
+      }
+    }, []);
+ 
 
   // Fetch initial data
   useEffect(() => {
@@ -34,11 +49,11 @@ const LessonProvider = ({ children }) => {
         }
 
         // Fetch user progress if user is logged in
-        const userId = localStorage.getItem('userId');
-        if (userId) {
-          const progressResponse = await axios.get(`http://localhost:4000/user/progress/${userId}`);
-          setUserProgress(progressResponse.data.progress);
-        }
+        // const userId = localStorage.getItem('userId');
+        // if (userId) {
+        //   const progressResponse = await axios.get(`http://localhost:4000/user/progress/${userId}`);
+        //   setUserProgress(progressResponse.data.progress);
+        // }
       } catch (error) {
         console.error('Error fetching data:', error);
         setError(error.message);
@@ -47,6 +62,24 @@ const LessonProvider = ({ children }) => {
 
     fetchData();
   }, []);
+
+  const updateLocalStorage = useCallback((newProgress) => {
+    try {
+      const currentUser = JSON.parse(localStorage.getItem('user')) || {};
+      const updatedUser = { ...currentUser, ...newProgress };
+      localStorage.setItem('user', JSON.stringify(updatedUser));
+    } catch (error) {
+      console.error('Error updating localStorage:', error);
+    }
+  }, []);
+
+  const updateProgress = useCallback((newProgress) => {
+    setUserProgress(prev => {
+      const updatedProgress = { ...prev, ...newProgress };
+      updateLocalStorage(updatedProgress);
+      return updatedProgress;
+    });
+  }, [updateLocalStorage]);
 
   // Start a lesson
   const startLesson = async (lessonId) => {
@@ -72,38 +105,52 @@ const LessonProvider = ({ children }) => {
     }
   };
 
-  // Complete a lesson
-  const completeLesson = async (lessonId) => {
+  const completeLesson = useCallback(async (lessonId) => {
+    setLoading(true);
+    setError(null);
+     
     try {
-      setLoading(true);
-      const userId = localStorage.getItem('userId');
+      const userId = getUserId();
+      if (!userId) throw new Error('User ID not found');
+  
       const response = await axios.post('http://localhost:4000/user/lesson/complete', {
-        userId,
-        lessonId,
+        userId: userId,
+        lessonId: lessonId, 
       });
-
-      setUserProgress(prev => ({
-        ...prev,
-        lessonsCompleted: [...prev.lessonsCompleted, lessonId],
-        xpPoints: response.data.progress.xpPoints,
-        level: response.data.progress.level,
-        streak: response.data.progress.streak,
-        currentLesson: null
-      }));
-
+      
+      // Add more robust logging
+      console.log('Complete Lesson Response:', response.data);
+      console.log('Completed Lessons:', response.data.completedLessons);
+  
+      // Ensure we're passing an array
+      const newProgress = { 
+        completedLessons: Array.isArray(response.data.completedLessons) 
+          ? response.data.completedLessons 
+          : [lessonId]
+      };
+      
+      updateProgress(newProgress);
       return response.data;
     } catch (error) {
-      setError(error.response?.data?.message || 'Failed to complete lesson');
+      const errorMessage = error.response?.data?.message || 'Failed to complete lesson';
+      setError(errorMessage);
       throw error;
     } finally {
       setLoading(false);
     }
+  }, [getUserId, updateProgress]);
+  
+
+
+useEffect(() => {
+  const handleStorageChange = () => {
+    const newStats = initialUserPrograss();
+    setUserProgress(newStats);
   };
 
-  // Check if a lesson is completed
-  const isLessonCompleted = (lessonId) => {
-    return userProgress.lessonsCompleted.includes(lessonId);
-  };
+  window.addEventListener('storage', handleStorageChange);
+  return () => window.removeEventListener('storage', handleStorageChange);
+}, []);
 
  
   const value = {
@@ -113,8 +160,9 @@ const LessonProvider = ({ children }) => {
     loading,
     error,
     startLesson,
-    completeLesson,
-    isLessonCompleted,
+    completeLesson
+   
+   
   };
 
   return (

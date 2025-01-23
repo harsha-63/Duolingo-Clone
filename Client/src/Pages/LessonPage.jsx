@@ -6,6 +6,7 @@ import { AuthContext } from "../Context/AuthContext";
 import { UserStatisticsContext } from "../Context/StaticsticContext";
 import IncorrectAnswerModal from "../Modal/IncorrectAnswer";
 import ZeroLivesModal from "../Modal/ZeroLife";
+import { LessonContext } from "../Context/LessonContext";
 
 // eslint-disable-next-line react/prop-types
 const ProgressBar = ({ current, total }) => (
@@ -37,7 +38,7 @@ function LessonPage() {
   const navigate = useNavigate();
   const { user } = useContext(AuthContext);
   const { userStats, reduceLife, refillLife, rewardGems } = useContext(UserStatisticsContext);
-
+  const {completeLesson} = useContext(LessonContext)
   const fetchLessonQuestions = useCallback(async () => {
     try {
       setIsLoading(true);
@@ -144,12 +145,12 @@ function LessonPage() {
     
     try {
       await rewardGems();
-      // Clear progress after successful completion
+      await completeLesson(lessonId);
       localStorage.removeItem(`lesson_${lessonId}_progress`);
     } catch (error) {
       console.error('Failed to reward gems:', error);
     }
-  }, [rewardGems, lessonCompleted, lessonId]);
+  }, [rewardGems, lessonCompleted, lessonId,completeLesson]);
 
   useEffect(() => {
     if (lessonCompleted) {
@@ -199,7 +200,7 @@ function LessonPage() {
                     alt="xp"
                     className="w-16 h-5"
                   />
-                  <p className="text-xl">{user.xp}</p>
+                  <p className="text-xl">{user.xpPoints}</p>
                 </div>
               </div>
               <div className="rounded-lg shadow-lg text-center w-48 h-32 bg-lime-500 border border-lime-500">

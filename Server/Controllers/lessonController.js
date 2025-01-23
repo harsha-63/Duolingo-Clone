@@ -131,39 +131,14 @@ export const completeLesson = async (req, res) => {
     if (!user) {
       return res.status(404).json({ message: 'User not found' });
     }
-
-    
     if (user.completedLessons.includes(lessonId)) {
       return res.status(400).json({ message: 'Lesson already completed' });
     }
-
-  
     user.completedLessons.push(lessonId);
-    user.lessonsCompleted += 1;
-    user.xpPoints += 10; 
-    user.currentLesson = null; 
-
-  
-    // if (user.xpPoints >= user.level * 100) { 
-    //   user.level += 1;
-    // }
-
-    // const lastActivity = user.updatedAt;
-    // const today = new Date();
-    // if (lastActivity.getDate() !== today.getDate()) {
-    //   user.streak += 1;
-    // }
-
     await user.save();
-
     res.status(200).json({
       message: 'Lesson completed',
-      progress: {
-        lessonsCompleted: user.lessonsCompleted,
-        xpPoints: user.xpPoints,
-        level: user.level,
-        streak: user.streak
-      }
+      completedLessons: user.completedLessons,
     });
   } catch (error) {
     res.status(500).json({ message: 'Server error', error: error.message });
