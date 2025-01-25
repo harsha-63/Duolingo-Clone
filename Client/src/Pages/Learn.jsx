@@ -17,7 +17,7 @@ const Learn = () => {
   const getColorClass = (color) => {
     switch (color) {
       case 'pink':
-        return 'bg-pink-300';
+        return 'bg-purple-400';
       case 'blue':
         return 'bg-blue-500';
       case 'green':
@@ -46,7 +46,7 @@ const Learn = () => {
   };
 
   return (
-    <div className="max-w-7xl mx-auto p-6">
+    <div className="max-w-7xl mx-auto p-6 ">
       {sections.map((section, sectionIndex) => {
         const nextAvailableLessonIndex = determineNextAvailableLesson(section.lessons);
 

@@ -2,7 +2,7 @@
 
 const Quests = () => {
   return (
-    <div>Quests</div>
+    <div className="flex justify-center items-center text-5xl">Coming Soon...</div>
   )
 }
 
