@@ -42,6 +42,11 @@ const createToken = (id) => {
         expiresIn: process.env.JWT_EXPIRES_IN
     });
     }
+const createRefreshToken = (id) => {
+    return jwt.sign({ id },process.env.REFRESH_TOKEN_SECRET, {
+        expiresIn:process.env.REFRESH_TOKEN_EXPIRES_IN 
+    });
+}    
 
 
     export const login = async (req, res) => {
@@ -56,6 +61,13 @@ const createToken = (id) => {
             return res.status(400).json({ message: "Invalid password" });
           }
           const accessToken = createToken(user._id);
+          const refreshToken = createRefreshToken(user._id);
+    
+          res.cookie("refreshToken", refreshToken, {
+            httpOnly: true, 
+            secure: true, 
+            sameSite: "none"
+          })
           res.status(200).json({
             message: "Login successfully",
             user: {
@@ -78,3 +90,21 @@ const createToken = (id) => {
           console.error(`Error: ${error.message}`);
         }
       }
+
+    export const logout = async (req, res) => {
+        res.clearCookie("refreshToken");
+        res.status(200).json({ message: "Logout successfully" });
+    }
+
+    export const refreshingToken = async (req, res, next) => {
+      const refreshToken = req.cookies?.refreshToken;
+      if (!refreshToken) {
+        return next(new CustomError("No refresh token provided", 401));
+      }  
+        const decoded = jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET);
+        const accessToken = createToken(decoded.id,process.env.REFRESH_TOKEN_EXPIRES_IN );
+        res.status(200).json({
+          message: "Token refreshed",
+          token: accessToken,
+        });
+    };

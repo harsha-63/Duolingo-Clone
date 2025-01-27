@@ -5,7 +5,7 @@ import { AuthContext } from '../../Context/AuthContext';
 
 const Sidebar = () => {
   const [isMoreOpen, setIsMoreOpen] = useState(false); 
-  const { user } = useContext(AuthContext);
+  const { user,logout } = useContext(AuthContext);
 
   const handleMoreClick = () => {
     setIsMoreOpen(!isMoreOpen); 
@@ -196,6 +196,10 @@ const Sidebar = () => {
                     <li>
                       <NavLink
                         to="/logout"
+                        onClick={(e) => {
+                          e.preventDefault(); 
+                          logout();
+                        }}
                         className={({ isActive }) =>
                           `flex items-center gap-3 px-3 py-2 text-lg font-semibold rounded-lg font-playpen transition ${
                             isActive ? 'bg-blue-200 text-blue-400 border-2 border-blue-400' : 'text-gray-500 hover:bg-gray-200'
