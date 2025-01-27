@@ -10,6 +10,7 @@ const Learn = () => {
   const navigate = useNavigate();
 
   const handleLessonClick = (lessonId) => {
+    console.log(`Navigating to lesson ${lessonId}`);
     localStorage.removeItem(`lesson_${lessonId}_progress`);
     navigate(`/lesson/${lessonId}`);
   };
@@ -105,7 +106,7 @@ const Learn = () => {
 
                 return (
                   <div
-                    key={lesson.id}
+                    key={lessonIndex}
                     className="absolute"
                     style={{
                       left: `${position.x}px`,
@@ -118,7 +119,7 @@ const Learn = () => {
                         text-white rounded-full flex flex-col justify-center 
                         items-center gap-1 font-semibold hover:bg-opacity-80 
                         transition-all cursor-pointer shadow-md hover:shadow-lg`}
-                      onClick={() => handleLessonClick(lesson._id)}
+                      onClick={() => handleLessonClick(lesson)}
                     >
                       {isLastLesson ? (
                         <FaTrophy className="text-yellow-400 text-5xl" />

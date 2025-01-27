@@ -39,13 +39,13 @@ const LessonProvider = ({ children }) => {
       try {
         const sectionsResponse = await axios.get('http://localhost:4000/user/sections');
         setSections(sectionsResponse.data);
-        console.log("sections:", sectionsResponse.data);
+        
 
         if (sectionsResponse.data.length > 0) {
           const firstSectionId = sectionsResponse.data[0]._id;
           const lessonsResponse = await axios.get(`http://localhost:4000/user/sections/${firstSectionId}/lessons`);
           setLessons(lessonsResponse.data);
-          console.log("lessons:", lessonsResponse.data);
+         
         }
 
         // Fetch user progress if user is logged in

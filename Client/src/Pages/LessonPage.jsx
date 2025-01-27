@@ -7,6 +7,9 @@ import { UserStatisticsContext } from "../Context/StaticsticContext";
 import IncorrectAnswerModal from "../Modal/IncorrectAnswer";
 import ZeroLivesModal from "../Modal/ZeroLife";
 import { LessonContext } from "../Context/LessonContext";
+import TextQuestion from "../Components/QuestionComponents/TextQues";
+import AudioQuestion from "../Components/QuestionComponents/AudioQues";
+
 
 // eslint-disable-next-line react/prop-types
 const ProgressBar = ({ current, total }) => (
@@ -20,10 +23,8 @@ const ProgressBar = ({ current, total }) => (
 
 function LessonPage() {
   const { lessonId } = useParams();
-  const [currentQuestionIndex, setCurrentQuestionIndex] = useState(() => {
-    const saved = localStorage.getItem(`lesson_${lessonId}_progress`);
-    return saved ? parseInt(saved, 10) : 0;
-  });
+  const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
+  const [currentQuestion, setCurrentQuestion] = useState(null);
   const [lessonQuestions, setLessonQuestions] = useState([]);
   const [selectedOption, setSelectedOption] = useState("");
   const [isLoading, setIsLoading] = useState(true);
@@ -38,7 +39,8 @@ function LessonPage() {
   const navigate = useNavigate();
   const { user } = useContext(AuthContext);
   const { userStats, reduceLife, refillLife, rewardGems } = useContext(UserStatisticsContext);
-  const {completeLesson} = useContext(LessonContext)
+  const { completeLesson } = useContext(LessonContext);
+
   const fetchLessonQuestions = useCallback(async () => {
     try {
       setIsLoading(true);
@@ -46,6 +48,13 @@ function LessonPage() {
         `http://localhost:4000/user/lesson/${lessonId}/questions`
       );
       setLessonQuestions(response.data);
+      
+      if (response.data.length > 0) {
+        const firstQuestion = await axios.get(
+          `http://localhost:4000/user/question/${response.data[0].id}?isText=${response.data[0].isText}`
+        );
+        setCurrentQuestion(firstQuestion.data);
+      }
       setError(null);
     } catch (err) {
       setError("Failed to load lesson questions");
@@ -61,10 +70,21 @@ function LessonPage() {
     }
   }, [lessonId, fetchLessonQuestions]);
 
-  // Save progress to localStorage
   useEffect(() => {
     localStorage.setItem(`lesson_${lessonId}_progress`, currentQuestionIndex.toString());
   }, [currentQuestionIndex, lessonId]);
+
+  const fetchQuestionData = async (questionId, isText) => {
+    try {
+      const response = await axios.get(
+        `http://localhost:4000/user/question/${questionId}?isText=${isText}`
+      );
+      return response.data;
+    } catch (error) {
+      console.error('Failed to fetch question:', error);
+      throw error;
+    }
+  };
 
   const handleRestoreLives = async () => {
     if (userStats.life > 0) return;
@@ -73,7 +93,7 @@ function LessonPage() {
       await refillLife();
       setShowZeroLivesModal(false);
     } catch (error) {
-      alert.error('Failed to refill lives:', error);
+      console.error('Failed to refill lives:', error);
     }
   };
 
@@ -81,13 +101,13 @@ function LessonPage() {
     localStorage.removeItem(`lesson_${lessonId}_progress`);
     navigate('/learn');
   };
+
   useEffect(() => {
     if (userStats !== undefined) {
       setIsStatsLoading(false);
     }
   }, [userStats]);
 
-  const currentQuestion = lessonQuestions[currentQuestionIndex];
   const isLessonComplete = currentQuestionIndex >= lessonQuestions.length;
 
   const handleOptionSelect = (option) => {
@@ -118,19 +138,27 @@ function LessonPage() {
     }
   };
 
-  const handleNext = () => {
-    if (!isLessonComplete) {
+  const handleNext = async () => {
+    if (currentQuestionIndex < lessonQuestions.length - 1) {
       const nextIndex = currentQuestionIndex + 1;
-      setCurrentQuestionIndex(nextIndex);
-      setSelectedOption("");
-      setHasChecked(false);
-      setIsCorrect(false);
-      setShowModal(false);
-      
-      // Check if this was the last question
-      if (nextIndex === lessonQuestions.length) {
-        setLessonCompleted(true);
+      try {
+        const nextQuestion = await fetchQuestionData(
+          lessonQuestions[nextIndex].id,
+          lessonQuestions[nextIndex].isText
+        );
+        setCurrentQuestionIndex(nextIndex);
+        setCurrentQuestion(nextQuestion);
+        setSelectedOption("");
+        setHasChecked(false);
+        setIsCorrect(false);
+        setShowModal(false);
+      } catch (error) {
+        console.log(error);
+        
+        setError("Failed to load next question");
       }
+    } else {
+      setLessonCompleted(true);
     }
   };
 
@@ -150,7 +178,7 @@ function LessonPage() {
     } catch (error) {
       console.error('Failed to reward gems:', error);
     }
-  }, [rewardGems, lessonCompleted, lessonId,completeLesson]);
+  }, [rewardGems, lessonCompleted, lessonId, completeLesson]);
 
   useEffect(() => {
     if (lessonCompleted) {
@@ -231,121 +259,102 @@ function LessonPage() {
 
   return (
     <div className="mx-auto max-w-full">
-    {/* Header Section */}
-    <div className="mb-4 px-4 md:px-24 lg:px-96 mt-10">
-      <div className="flex items-center justify-between mb-4">
-        <button 
-          onClick={handleReturnHome}
-          className="p-3 hover:bg-gray-100 rounded-full"
-        >
-          <FaTimes className="text-2xl text-gray-500 cursor-pointer" />
-        </button>
-        <ProgressBar
-          current={currentQuestionIndex}
-          total={lessonQuestions.length}
-        />
-        <div className="flex items-center gap-2 ml-2">
-          <img
-            src="https://d35aaqx5ub95lt.cloudfront.net/images/hearts/8fdba477c56a8eeb23f0f7e67fdec6d9.svg"
-            alt="Heart Icon"
-            className="w-8 h-8"
+      <div className="mb-4 px-4 md:px-24 lg:px-96 mt-10">
+        <div className="flex items-center justify-between mb-4">
+          <button 
+            onClick={handleReturnHome}
+            className="p-3 hover:bg-gray-100 rounded-full"
+          >
+            <FaTimes className="text-2xl text-gray-500 cursor-pointer" />
+          </button>
+          <ProgressBar
+            current={currentQuestionIndex}
+            total={lessonQuestions.length}
           />
-          <span className="font-bold text-red-400 text-lg">
-            {isStatsLoading ? (
-              <span className="animate-pulse">...</span>
-            ) : (
-              userStats.life
-            )}
-          </span>
+          <div className="flex items-center gap-2 ml-2">
+            <img
+              src="https://d35aaqx5ub95lt.cloudfront.net/images/hearts/8fdba477c56a8eeb23f0f7e67fdec6d9.svg"
+              alt="Heart Icon"
+              className="w-8 h-8"
+            />
+            <span className="font-bold text-red-400 text-lg">
+              {isStatsLoading ? (
+                <span className="animate-pulse">...</span>
+              ) : (
+                userStats.life
+              )}
+            </span>
+          </div>
         </div>
       </div>
-    </div>
-
-    {/* Question Section */}
-    <div className="mb-10 px-4 md:px-24 lg:px-96 font-playpen">
-      <div className="text-3xl text-gray-800 mb-3 md:px-10 lg:px-20">
-        {currentQuestion.questionType}
-      </div>
-      <p className="text-xl md:px-10 lg:px-20 mb-3">
-        {currentQuestion.question}
-      </p>
-      <h2 className="text-lg font-bold mb-6 md:px-10 lg:px-20">
-        {currentQuestion.questionText}
-      </h2>
-      <div className="space-y-4 md:px-10 lg:px-20">
-        {currentQuestion.options.map((option, index) => (
-          <button
-            key={index}
-            onClick={() => handleOptionSelect(option.text)}
-            className={`w-full p-4 text-left rounded-lg border-2 transition-all ${
-              selectedOption === option.text
-                ? hasChecked
-                  ? isCorrect
-                    ? "border-green-500 bg-green-50"
-                    : "border-red-500 bg-red-50"
-                  : "border-blue-500 bg-blue-50"
-                : "border-gray-200 hover:border-gray-300"
-            }`}
-            disabled={hasChecked}
-          >
-            {option.text}
-          </button>
-        ))}
-      </div>
-    </div>
-
-    {/* Footer Section */}
-    <div className="border-t border-gray-400 pt-6 w-full">
-      <div className="flex justify-between px-4 md:px-24 lg:px-96">
-        <button
-          onClick={handleSkip}
-          className={`px-6 md:px-10 py-3 text-gray-500 font-semibold hover:bg-gray-100 rounded-lg ${
-            isLessonComplete ? "bg-gray-300" : "bg-gray-200"
-          }`}
-          disabled={isLessonComplete}
-        >
-          {isLessonComplete ? "Review Lesson" : "Skip"}
-        </button>
-        {!hasChecked && (
-          <button
-            onClick={handleCheck}
-            disabled={!selectedOption}
-            className={`px-6 md:px-10 py-3 rounded-lg font-semibold transition-all ${
-              selectedOption
-                ? "bg-lime-500 text-white hover:bg-lime-600"
-                : "bg-gray-200 text-gray-500"
-            }`}
-          >
-            Check
-          </button>
+      <div>
+        {currentQuestion.isText ? (
+          
+          <TextQuestion
+            currentQuestion={currentQuestion}
+            selectedOption={selectedOption}
+            hasChecked={hasChecked}
+            isCorrect={isCorrect}
+            onOptionSelect={handleOptionSelect}
+          />
+        ) : (
+          <AudioQuestion
+            currentQuestion={currentQuestion} />        
         )}
-        {hasChecked && !isLessonComplete && (
-          <button
-            onClick={handleNext}
-            className="px-6 md:px-10 py-3 bg-lime-500 text-white font-semibold rounded-lg hover:bg-lime-600"
-          >
-            Continue
-          </button>
-        )}
+        )
       </div>
-    </div>
 
-    {/* Modals remain the same */}
-    {showModal && (
-      <IncorrectAnswerModal
-        onClose={closeModal}
-        correctAnswer={currentQuestion.options[0].text}
-      />
-    )}
-    {showZeroLivesModal && (
-      <ZeroLivesModal 
-        onRestoreLives={handleRestoreLives}
-        onReturnHome={handleReturnHome}
-      />
-    )}
-  </div>
-);
+      <div className="border-t border-gray-400 pt-6 w-full">
+        <div className="flex justify-between px-4 md:px-24 lg:px-96">
+          <button
+            onClick={handleSkip}
+            className={`px-6 md:px-10 py-3 text-gray-500 font-semibold hover:bg-gray-100 rounded-lg ${
+              isLessonComplete ? "bg-gray-300" : "bg-gray-200"
+            }`}
+            disabled={isLessonComplete}
+          >
+            {isLessonComplete ? "Review Lesson" : "Skip"}
+          </button>
+          {!hasChecked && (
+            <button
+              onClick={handleCheck}
+              disabled={!selectedOption}
+              className={`px-6 md:px-10 py-3 rounded-lg font-semibold transition-all ${
+                selectedOption
+                  ? "bg-lime-500 text-white hover:bg-lime-600"
+                  : "bg-gray-200 text-gray-500"
+              }`}
+            >
+              Check
+            </button>
+          )}
+          {hasChecked && !isLessonComplete && (
+            <button
+              onClick={handleNext}
+              className="px-6 md:px-10 py-3 bg-lime-500 text-white font-semibold rounded-lg hover:bg-lime-600"
+            >
+              Continue
+            </button>
+          )}
+        </div>
+      </div>
+
+      {showModal && (
+        <IncorrectAnswerModal
+          onClose={closeModal}
+          correctAnswer={currentQuestion.options[0].text}
+        />
+      )}
+      {showZeroLivesModal && (
+        <ZeroLivesModal 
+          onRestoreLives={handleRestoreLives}
+          onReturnHome={handleReturnHome}
+        />
+      )}
+    </div>
+  );
 }
-export default LessonPage
+
+export default LessonPage;
 
 
