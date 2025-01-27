@@ -1,5 +1,7 @@
 import mongoose from "mongoose";
 
+
+
 const audioQuestionSchema = new mongoose.Schema({
   questionType: {
     type: String,
@@ -14,6 +16,10 @@ const audioQuestionSchema = new mongoose.Schema({
     type: String,
     required: true, 
   },
+  isText:{
+    type: Boolean,
+    default: false
+  },
   correctAnswer: {
     type: mongoose.Schema.Types.Mixed, 
     required: true,
@@ -22,9 +28,13 @@ const audioQuestionSchema = new mongoose.Schema({
     type: Number,
     default: 3, 
   },
+  lesson:{
+     type: mongoose.Schema.Types.ObjectId,
+     ref: "Lesson",
+     required: true
+  },
 
 });
 
 const AudioQuestion = mongoose.model("AudioQuestion", audioQuestionSchema);
-
 export default AudioQuestion;

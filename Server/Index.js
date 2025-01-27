@@ -4,8 +4,6 @@ import dotenv from 'dotenv';
 import cors from 'cors';
 import cookieParser from 'cookie-parser';
 import connectDb from './Config/db.js';
-import './Models/questionModel.js';
-import './Models/lessonModel.js';
 import authRouter from './Routes/authRoute.js';
 import languageRouter from './Routes/PublicRoutes/languageRoute.js';
 import userRouter from './Routes/userRouter.js';

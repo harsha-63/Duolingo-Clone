@@ -7,8 +7,8 @@ const lessonSchema = new mongoose.Schema({
     required: true  
   },
   questions: [{
-    type: mongoose.Schema.Types.ObjectId,
-    ref: "Question"
+   id: { type: String, required: true },
+   isText: { type: Boolean, required: true },
   }]
 });
 
