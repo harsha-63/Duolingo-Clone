@@ -6,6 +6,8 @@ import { AuthContext } from "../Context/AuthContext";
 import { UserStatisticsContext } from "../Context/StaticsticContext";
 import IncorrectAnswerModal from "../Modal/IncorrectAnswer";
 import ZeroLivesModal from "../Modal/ZeroLife";
+import LackOfGemsModal from "../Modal/LackofGems";
+import CloseLessonModal from "../Modal/CloseModal";
 import { LessonContext } from "../Context/LessonContext";
 import TextQuestion from "../Components/QuestionComponents/TextQues";
 import AudioQuestion from "../Components/QuestionComponents/AudioQues";
@@ -31,6 +33,8 @@ function LessonPage() {
   const [error, setError] = useState(null);
   const [hasChecked, setHasChecked] = useState(false);
   const [isCorrect, setIsCorrect] = useState(false);
+  const [showCloseModal, setShowCloseModal] = useState(false);
+  const [isVisible, setIsVisible] = useState(false);
   const [showModal, setShowModal] = useState(false);
   const [showZeroLivesModal, setShowZeroLivesModal] = useState(false);
   const [lessonCompleted, setLessonCompleted] = useState(false);
@@ -86,12 +90,23 @@ function LessonPage() {
     }
   };
 
+  const handleClose = () => {
+   setShowCloseModal(true)
+  };
+    
+
   const handleRestoreLives = async () => {
     if (userStats.life > 0) return;
     
     try {
+      if(userStats.gems < 350){
+        setIsVisible(true);
+        setShowZeroLivesModal(false);
+      }
+      else{
       await refillLife();
       setShowZeroLivesModal(false);
+      }
     } catch (error) {
       console.error('Failed to refill lives:', error);
     }
@@ -210,6 +225,10 @@ function LessonPage() {
 
   const closeModal = () => setShowModal(false);
 
+  const handleKeepLearning = () => {
+    setShowCloseModal(false);
+  };
+
   if (isLoading) {
     return (
       <div className="flex items-center justify-center min-h-screen">
@@ -285,7 +304,7 @@ function LessonPage() {
       <div className="mb-4 px-4  lg:px-96 mt-10">
         <div className="flex items-center justify-between mb-4">
           <button 
-            onClick={handleReturnHome}
+            onClick={handleClose}
             className="p-3 hover:bg-gray-100 rounded-full"
           >
             <FaTimes className="text-2xl text-gray-500 cursor-pointer" />
@@ -383,6 +402,19 @@ function LessonPage() {
           onReturnHome={handleReturnHome}
         />
       )}
+      {isVisible && (
+        <LackOfGemsModal 
+          onReturnHome={handleReturnHome}
+        />
+      )}
+      {
+        showCloseModal && (
+          <CloseLessonModal
+            onKeepLearning={handleKeepLearning}
+            onReturnHome={handleReturnHome}
+          />
+        )
+      }
     </div>
   );
 }

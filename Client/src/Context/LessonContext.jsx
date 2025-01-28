@@ -48,13 +48,6 @@ const LessonProvider = ({ children }) => {
           console.log(lessonsResponse.data)
          
         }
-
-        // Fetch user progress if user is logged in
-        // const userId = localStorage.getItem('userId');
-        // if (userId) {
-        //   const progressResponse = await axios.get(`http://localhost:4000/user/progress/${userId}`);
-        //   setUserProgress(progressResponse.data.progress);
-        // }
       } catch (error) {
         console.error('Error fetching data:', error);
         setError(error.message);
@@ -81,8 +74,6 @@ const LessonProvider = ({ children }) => {
       return updatedProgress;
     });
   }, [updateLocalStorage]);
-
-  // Start a lesson
   const startLesson = async (lessonId) => {
     try {
       setLoading(true);
@@ -118,12 +109,7 @@ const LessonProvider = ({ children }) => {
         userId: userId,
         lessonId: lessonId, 
       });
-      
-      // Add more robust logging
-      console.log('Complete Lesson Response:', response.data);
-      console.log('Completed Lessons:', response.data.completedLessons);
   
-      // Ensure we're passing an array
       const newProgress = { 
         completedLessons: Array.isArray(response.data.completedLessons) 
           ? response.data.completedLessons 

@@ -21,13 +21,16 @@ export const refillLife = async (req, res) => {
   const { userId } = req.body;
   try {
     const user = await User.findById(userId);
-    if (user && user.gems >= 350) {
+    if(!user){
+      res.status(400).json({ message: ' user not found' });
+    }
+    if (user.gems >= 350) {
       user.gems -= 350;
       user.life = 5;
       await user.save();
       res.status(200).json({ message: 'Life refilled', life: user.life, gems: user.gems });
     } else {
-      res.status(400).json({ message: 'Insufficient gems or user not found' });
+      res.status(400).json({ message: 'Insufficient gems ' });
     }
   } catch (error) {
     res.status(500).json({ message: 'Server error', error: error.message });

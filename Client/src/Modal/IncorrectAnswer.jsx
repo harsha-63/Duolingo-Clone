@@ -18,10 +18,10 @@ const IncorrectAnswerModal = ({ onClose, correctAnswer }) => {
         {/* Content */}
         <div className="p-6">
           <div className="mb-6">
-            <p className="text-gray-600 mb-3 text-center">
+            <p className="text-gray-600 mb-3 text-center font-playpen">
               The correct answer was:
             </p>
-            <div className="bg-green-50 border border-green-100 rounded-xl p-4">
+            <div className="bg-green-50 border border-green-100 rounded-xl p-4 font-playpen">
               <p className="text-green-800 font-medium text-center">
                 {correctAnswer}
               </p>
