@@ -43,13 +43,13 @@ const Learn = () => {
 
   const determineNextAvailableLesson = (lessons) => {
     const completedLessons = user?.completedLessons || [];
-    return lessons.findIndex(lesson => !completedLessons.includes(lesson._id));
+    return lessons.findIndex(lessonId => !completedLessons.includes(lessonId));
   };
 
   return (
     <div className="max-w-7xl mx-auto p-6 ">
       {sections.map((section, sectionIndex) => {
-        const nextAvailableLessonIndex = determineNextAvailableLesson(section.lessons);
+        const nextAvailableLessonIndex = determineNextAvailableLesson(section.lessons)
 
         return (
           <div key={section.id} className="mb-32 relative mx-3">
@@ -87,15 +87,14 @@ const Learn = () => {
                 <img src={section.character} alt="Section Character" className="w-96 h-96" />
               </div>
 
-              {section.lessons.map((lesson, lessonIndex) => {
+              {section.lessons.map((lessonId, lessonIndex) => {
                 const position = getCirclePosition(
                   lessonIndex,
                   section.lessons.length,
                   sectionIndex % 2 === 0
                 );
-
                 const isLastLesson = lessonIndex === section.lessons.length - 1;
-                const isCompleted = user?.completedLessons?.includes(lesson._id);
+                const isCompleted =user?.completedLessons?.includes(lessonId);
                 const isNextAvailableLesson = lessonIndex === nextAvailableLessonIndex;
 
                 const bgColorClass = isCompleted 
@@ -119,7 +118,7 @@ const Learn = () => {
                         text-white rounded-full flex flex-col justify-center 
                         items-center gap-1 font-semibold hover:bg-opacity-80 
                         transition-all cursor-pointer shadow-md hover:shadow-lg`}
-                      onClick={() => handleLessonClick(lesson)}
+                      onClick={() => handleLessonClick(lessonId)}
                     >
                       {isLastLesson ? (
                         <FaTrophy className="text-yellow-400 text-5xl" />
@@ -128,7 +127,7 @@ const Learn = () => {
                       ) : (
                         <FaStar className="text-white text-5xl" />
                       )}
-                      <span className="text-sm">{lesson.name}</span>
+                    
                     </div>
                   </div>
                 );

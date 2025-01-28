@@ -45,6 +45,7 @@ const LessonProvider = ({ children }) => {
           const firstSectionId = sectionsResponse.data[0]._id;
           const lessonsResponse = await axios.get(`http://localhost:4000/user/sections/${firstSectionId}/lessons`);
           setLessons(lessonsResponse.data);
+          console.log(lessonsResponse.data)
          
         }
 

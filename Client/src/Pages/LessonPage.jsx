@@ -108,7 +108,13 @@ function LessonPage() {
     }
   }, [userStats]);
 
-  const isLessonComplete = currentQuestionIndex >= lessonQuestions.length;
+  useEffect(() => {
+    if (lessonQuestions.length > 0 && currentQuestionIndex >= lessonQuestions.length) {
+      setLessonCompleted(true);
+    }
+  }, [lessonQuestions, currentQuestionIndex]);
+  
+
 
   const handleOptionSelect = (option) => {
     if (!hasChecked) {
@@ -116,13 +122,26 @@ function LessonPage() {
     }
   };
 
+
   const handleCheck = async () => {
-    if (!selectedOption || isLessonComplete) return;
-    
+    if (!selectedOption || lessonCompleted) return;
+  
     setHasChecked(true);
-    const isAnswerCorrect = selectedOption === currentQuestion.options[0].text;
+  
+    let isAnswerCorrect;
+  
+    if (currentQuestion.isText) {
+      isAnswerCorrect = selectedOption === currentQuestion.options[0].text;
+    } else {
+      isAnswerCorrect = selectedOption.trim().toLowerCase() === currentQuestion.correctAnswer.trim().toLowerCase();
+      console.log(selectedOption.trim().toLowerCase());
+      console.log(currentQuestion.correctAnswer.trim().toLowerCase());
+      
+      console.log(isAnswerCorrect);
+    }
+  
     setIsCorrect(isAnswerCorrect);
-    
+  
     if (!isAnswerCorrect) {
       try {
         await reduceLife();
@@ -137,6 +156,8 @@ function LessonPage() {
       }
     }
   };
+  
+  
 
   const handleNext = async () => {
     if (currentQuestionIndex < lessonQuestions.length - 1) {
@@ -163,7 +184,7 @@ function LessonPage() {
   };
 
   const handleSkip = () => {
-    if (!isLessonComplete) {
+    if (!lessonCompleted) {
       handleNext();
     }
   };
@@ -204,50 +225,50 @@ function LessonPage() {
     );
   }
 
-  if (isLessonComplete) {
+  if (lessonCompleted) {
     return (
-      <div className="flex flex-col items-center justify-center min-h-screen">
+      <div className="flex flex-col items-center justify-center min-h-screen px-4 sm:px-6 lg:px-8">
         <div>
           <img
             src="https://i.pinimg.com/736x/b8/1b/a9/b81ba98959e0eec1d6512cf8a41cb7cd.jpg"
             alt="Duolingo Character"
-            className="w-80 h-auto"
+            className="w-40 sm:w-60 md:w-80 h-auto"
           />
         </div>
         {user ? (
           <>
-            <div className="text-3xl font-bold font-playpen text-yellow-400">
+            <div className="text-2xl sm:text-3xl font-bold font-playpen text-yellow-400 text-center">
               Lesson Complete!
             </div>
             <div className="flex gap-4 mt-2">
-              <div className="rounded-lg shadow-lg text-center w-48 h-32 bg-yellow-400 border border-yellow-400">
-                <h2 className="text-sm text-gray-200">TOTAL XP</h2>
-                <div className="flex justify-center items-center rounded-lg bg-white py-10 mt-2">
+              <div className="rounded-lg shadow-lg text-center w-32 h-28 sm:w-48 sm:h-32 bg-yellow-400 border border-yellow-400">
+                <h2 className="text-xs sm:text-sm text-gray-200">TOTAL XP</h2>
+                <div className="flex justify-center items-center rounded-lg bg-white py-5 sm:py-10 mt-2">
                   <img
                     src="https://d35aaqx5ub95lt.cloudfront.net/images/goals/2b5a211d830a24fab92e291d50f65d1d.svg"
                     alt="xp"
-                    className="w-16 h-5"
+                    className="w-16 sm:w-16 h-6 sm:h-5"
                   />
-                  <p className="text-xl">{user.xpPoints}</p>
+                  <p className="text-lg sm:text-xl">{user.xpPoints}</p>
                 </div>
               </div>
-              <div className="rounded-lg shadow-lg text-center w-48 h-32 bg-lime-500 border border-lime-500">
-                <h2 className="text-sm text-gray-200">AMAZING</h2>
-                <div className="flex justify-center items-center rounded-lg bg-white py-7 mt-2">
-                  <p className="text-xl mt-4">100%</p>
+              <div className="rounded-lg shadow-lg text-center w-32 h-28 sm:w-48 sm:h-32 bg-lime-500 border border-lime-500">
+                <h2 className="text-xs sm:text-sm text-gray-200">AMAZING</h2>
+                <div className="flex justify-center items-center rounded-lg bg-white py-5 sm:py-7 mt-2">
+                  <p className="text-lg sm:text-xl mt-3 sm:mt-4">100%</p>
                 </div>
               </div>
             </div>
           </>
         ) : null}
         <div className="mt-10 border-t border-gray-400 w-full">
-          <div className="flex justify-between px-96">
-            <button className="mt-6 px-10 py-4 bg-gray-300 text-white rounded-lg text-lg">
+          <div className="flex flex-col sm:flex-row justify-center sm:justify-between gap-4 px-6 sm:px-20 lg:px-96">
+            <button className="mt-6 px-6 sm:px-10 py-3 sm:py-4 bg-gray-300 text-white rounded-lg text-base sm:text-lg">
               Review Lesson
             </button>
-            <button 
+            <button
               onClick={handleReturnHome}
-              className="mt-6 px-10 p-4 font-playpen bg-lime-500 text-white rounded-lg text-lg"
+              className="mt-6 px-6 sm:px-10 py-3 sm:py-4 font-playpen bg-lime-500 text-white rounded-lg text-base sm:text-lg"
             >
               Continue
             </button>
@@ -255,11 +276,12 @@ function LessonPage() {
         </div>
       </div>
     );
-  }
+    
+  }    
 
   return (
     <div className="mx-auto max-w-full">
-      <div className="mb-4 px-4 md:px-24 lg:px-96 mt-10">
+      <div className="mb-4 px-4  lg:px-96 mt-10">
         <div className="flex items-center justify-between mb-4">
           <button 
             onClick={handleReturnHome}
@@ -299,9 +321,13 @@ function LessonPage() {
           />
         ) : (
           <AudioQuestion
-            currentQuestion={currentQuestion} />        
+            currentQuestion={currentQuestion}
+            hasChecked={hasChecked}
+            isCorrect={isCorrect}
+            onOptionSelect={handleOptionSelect}
+           />        
         )}
-        )
+        
       </div>
 
       <div className="border-t border-gray-400 pt-6 w-full">
@@ -309,11 +335,11 @@ function LessonPage() {
           <button
             onClick={handleSkip}
             className={`px-6 md:px-10 py-3 text-gray-500 font-semibold hover:bg-gray-100 rounded-lg ${
-              isLessonComplete ? "bg-gray-300" : "bg-gray-200"
+              lessonCompleted ? "bg-gray-300" : "bg-gray-200"
             }`}
-            disabled={isLessonComplete}
+            disabled={lessonCompleted}
           >
-            {isLessonComplete ? "Review Lesson" : "Skip"}
+            {lessonCompleted ? "Review Lesson" : "Skip"}
           </button>
           {!hasChecked && (
             <button
@@ -328,7 +354,7 @@ function LessonPage() {
               Check
             </button>
           )}
-          {hasChecked && !isLessonComplete && (
+          {hasChecked && !lessonCompleted && (
             <button
               onClick={handleNext}
               className="px-6 md:px-10 py-3 bg-lime-500 text-white font-semibold rounded-lg hover:bg-lime-600"
@@ -342,7 +368,12 @@ function LessonPage() {
       {showModal && (
         <IncorrectAnswerModal
           onClose={closeModal}
-          correctAnswer={currentQuestion.options[0].text}
+          correctAnswer={
+            currentQuestion.isText
+              ? currentQuestion.options[0].text
+              : currentQuestion.correctAnswer
+          }
+
         />
       )}
       {showZeroLivesModal && (
