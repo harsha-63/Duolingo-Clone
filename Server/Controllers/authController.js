@@ -76,7 +76,7 @@ const createRefreshToken = (id) => {
               email: user.email,
               age: user.age,
               flagUrl: user.flagUrl, 
-              xp: user.xp,            
+              xpPoints: user.xpPoints,            
               gems: user.gems,       
               life: user.life ,
               streak: user.streak,

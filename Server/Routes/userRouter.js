@@ -1,7 +1,7 @@
 
 import express from 'express';
 import { getAllSections,getSectionById,getLessonsInSection,getLessonById,getQuestionsForLesson,startLesson,resetLessonProgress,completeLesson,getQuestionById } from '../Controllers/lessonController.js';
-import { reduceLife, refillLife, rewardGems } from '../Controllers/statisticController.js';
+import { reduceLife, refillLife, rewardGems,xpPoints } from '../Controllers/statisticController.js';
 
 
 
@@ -19,6 +19,7 @@ userRouter
 .post('/reduce', reduceLife)
 .post('/refill', refillLife)
 .post('/reward', rewardGems)
+.post('/xpPoints',xpPoints)
 
 .post('/lesson/start', startLesson)
 .post('/lesson/complete', completeLesson)

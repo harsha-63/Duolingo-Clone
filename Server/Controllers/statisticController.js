@@ -39,11 +39,28 @@ export const rewardGems = async (req, res) => {
   try {
     const user = await User.findById(userId);
     if (user) {
-      user.gems += 15;
+      user.gems += 30;
       await user.save();
       res.status(200).json({ message: 'Gems rewarded', gems: user.gems });
     } else {
       res.status(400).json({ message: 'User not found' });
+    }
+  } catch (error) {
+    res.status(500).json({ message: 'Server error', error: error.message });
+  }
+};
+
+
+export const xpPoints = async (req, res) => {
+  const { userId } = req.body;
+  try {
+    const user = await User.findById(userId);
+    if (user) {
+      user.xpPoints += 15
+      await user.save();
+      res.status(200).json({ xpPoints: user.xpPoints });
+    } else {
+      res.status(404).json({ message: 'User not found' });
     }
   } catch (error) {
     res.status(500).json({ message: 'Server error', error: error.message });

@@ -38,7 +38,7 @@ function LessonPage() {
   
   const navigate = useNavigate();
   const { user } = useContext(AuthContext);
-  const { userStats, reduceLife, refillLife, rewardGems } = useContext(UserStatisticsContext);
+  const { userStats, reduceLife, refillLife, rewardGems,xpPoints } = useContext(UserStatisticsContext);
   const { completeLesson } = useContext(LessonContext);
 
   const fetchLessonQuestions = useCallback(async () => {
@@ -193,13 +193,14 @@ function LessonPage() {
     if (!lessonCompleted) return;
     
     try {
+      await xpPoints()
       await rewardGems();
       await completeLesson(lessonId);
       localStorage.removeItem(`lesson_${lessonId}_progress`);
     } catch (error) {
       console.error('Failed to reward gems:', error);
     }
-  }, [rewardGems, lessonCompleted, lessonId, completeLesson]);
+  }, [rewardGems, lessonCompleted, lessonId, completeLesson,xpPoints]);
 
   useEffect(() => {
     if (lessonCompleted) {
@@ -247,9 +248,9 @@ function LessonPage() {
                   <img
                     src="https://d35aaqx5ub95lt.cloudfront.net/images/goals/2b5a211d830a24fab92e291d50f65d1d.svg"
                     alt="xp"
-                    className="w-16 sm:w-16 h-6 sm:h-5"
+                    className="w-20 sm:w-16 h-6 sm:h-5"
                   />
-                  <p className="text-lg sm:text-xl">{user.xpPoints}</p>
+                  <p className="text-lg sm:text-xl">{userStats.xpPoints}</p>
                 </div>
               </div>
               <div className="rounded-lg shadow-lg text-center w-32 h-28 sm:w-48 sm:h-32 bg-lime-500 border border-lime-500">

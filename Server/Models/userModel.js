@@ -40,7 +40,7 @@ const userSchema = new mongoose.Schema({
   },
   xpPoints: {
     type: Number,
-    default: 0
+    default: 100
   },
   level: {
     type: Number,

@@ -13,9 +13,10 @@ const UserStatisticsProvider = ({ children }) => {
       return {
         life: typeof user?.life === 'number' ? user.life : 5,
         gems: typeof user?.gems === 'number' ? user.gems : 50,
+        xpPoints:typeof user?.xpPoints ==='number' ? user.xpPoints:200
       };
     } catch {
-      return { life: 5, gems: 50 };
+      return { life: 5, gems: 50 ,xpPoints:200 };
     }
   };
 
@@ -124,6 +125,31 @@ const UserStatisticsProvider = ({ children }) => {
     }
   }, [getUserId, updateStats]);
 
+
+  const xpPoints = useCallback(async () => {
+    setLoading(true);
+    setError(null);
+    
+    try {
+      const userId = getUserId();
+      if (!userId) throw new Error('User ID not found');
+
+      const response = await axios.post('http://localhost:4000/user/xpPoints', {
+        userId: userId,
+      });
+      
+      const newStats = { xpPoints: response.data.xpPoints };
+      updateStats(newStats);
+      return response.data;
+    } catch (error) {
+      const errorMessage = error.response?.data?.message || 'Failed to get xpPoints';
+      setError(errorMessage);
+      throw error;
+    } finally {
+      setLoading(false);
+    }
+  }, [getUserId, updateStats]);
+
  
     
 
@@ -145,6 +171,7 @@ const UserStatisticsProvider = ({ children }) => {
     reduceLife,
     refillLife,
     rewardGems,
+    xpPoints
   };
 
   return (
