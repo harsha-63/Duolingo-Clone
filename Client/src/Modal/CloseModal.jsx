@@ -12,7 +12,7 @@ const CloseLessonModal = ({  onKeepLearning,onReturnHome }) => {
             alt="Sad Duolingo Character"
             className="w-28 h-auto mb-4"
           />
-          <h2 className="text-lg font-bold text-gray-800 text-center mb-4">
+          <h2 className="text-xl font-playpen font-semibold text-gray-800 text-center mb-4">
             Wait, don’t go! You’ll lose your progress if you quit now
           </h2>
           <div className="flex gap-4 w-full mt-4">
@@ -22,10 +22,12 @@ const CloseLessonModal = ({  onKeepLearning,onReturnHome }) => {
             >
               Keep Learning
             </button>
+            </div>
+            <div className="flex gap-4 w-full mt-4">
             <button
               onClick={onReturnHome}
               
-              className="w-full py-3 bg-red-500 hover:bg-red-600 text-white font-bold rounded-lg transition-colors"
+              className="w-full py-3  text-red-500 font-bold rounded-lg transition-colors"
             >
               End Lesson
             </button>

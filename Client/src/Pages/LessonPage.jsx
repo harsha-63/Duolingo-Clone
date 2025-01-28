@@ -148,6 +148,8 @@ function LessonPage() {
     if (currentQuestion.isText) {
       isAnswerCorrect = selectedOption === currentQuestion.options[0].text;
     } else {
+      console.log('Processed input:', selectedOption);
+      console.log('Processed input length:', selectedOption.length);
       isAnswerCorrect = selectedOption.trim().toLowerCase() === currentQuestion.correctAnswer.trim().toLowerCase();
       console.log(selectedOption.trim().toLowerCase());
       console.log(currentQuestion.correctAnswer.trim().toLowerCase());

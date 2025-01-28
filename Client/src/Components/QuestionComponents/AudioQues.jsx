@@ -61,9 +61,10 @@ const AudioQuestion = ({
               type="text"
               value={fillInBlankAnswer}
               onChange={(e) => {
-                setFillInBlankAnswer(e.target.value); 
-                onOptionSelect(fillInBlankAnswer);
-              }}
+                const newValue = e.target.value;
+                setFillInBlankAnswer(newValue); 
+                onOptionSelect(newValue);
+            }}
               className={`mx-2 border-b-2 outline-none px-2 w-32 ${
               hasChecked
                 ? isCorrect
@@ -97,9 +98,10 @@ const AudioQuestion = ({
         type="text"
         value={transcriptionInput}
         onChange={(e) => {
-          setTranscriptionInput(e.target.value); 
-          onOptionSelect(transcriptionInput); 
-        }}
+          const newValue = e.target.value;
+          setTranscriptionInput(newValue); 
+          onOptionSelect(newValue); 
+      }}
         className={`w-full p-3 border-2 rounded-lg outline-none ${
           hasChecked
             ? isCorrect

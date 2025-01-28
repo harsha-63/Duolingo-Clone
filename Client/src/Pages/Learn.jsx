@@ -10,9 +10,14 @@ const Learn = () => {
   const navigate = useNavigate();
 
   const handleLessonClick = (lessonId) => {
-    console.log(`Navigating to lesson ${lessonId}`);
-    localStorage.removeItem(`lesson_${lessonId}_progress`);
-    navigate(`/lesson/${lessonId}`);
+    if(user?.life>0){
+      localStorage.removeItem(`lesson_${lessonId}_progress`);
+      navigate(`/lesson/${lessonId}`);
+    }
+    else{
+      navigate('/learn');
+    }
+   
   };
 
   const getColorClass = (color) => {
