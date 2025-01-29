@@ -1,4 +1,4 @@
-import { useContext } from 'react';
+import { useContext,useState } from 'react';
 import { LessonContext } from '../Context/LessonContext';
 import { FaBook, FaStar, FaTrophy, FaCheckCircle } from 'react-icons/fa';
 import { useNavigate } from 'react-router-dom';
@@ -7,17 +7,34 @@ import { AuthContext } from '../Context/AuthContext';
 const Learn = () => {
   const { sections } = useContext(LessonContext); 
   const { user } = useContext(AuthContext);
+  const [showBox, setShowBox] = useState(false);
+  const [boxPosition, setBoxPosition] = useState({ x: 0, y: 0 });
+  const [selectedLessonId, setSelectedLessonId] = useState(null);
+  const [isClickedLessonAvailable, setIsClickedLessonAvailable] = useState(false);
   const navigate = useNavigate();
 
-  const handleLessonClick = (lessonId) => {
-    if(user?.life>0){
-      localStorage.removeItem(`lesson_${lessonId}_progress`);
-      navigate(`/lesson/${lessonId}`);
+  const handleLessonClick = (lessonId, event,isAvailable) => {
+    const rect = event.currentTarget.getBoundingClientRect();
+    setBoxPosition({
+      x: rect.right + 10, 
+      y: rect.top
+    });
+    setSelectedLessonId(lessonId);
+    setIsClickedLessonAvailable(isAvailable);
+    setShowBox(true);
+  };
+
+  const handleStartLesson = () => {
+    if (user?.life > 0) {
+      localStorage.removeItem(`lesson_${selectedLessonId}_progress`);
+      navigate(`/lesson/${selectedLessonId}`);
     }
-    else{
-      navigate('/learn');
-    }
-   
+    setShowBox(false);
+  };
+
+  const handlePractice = () => {
+    navigate('/learn');
+    setShowBox(false);
   };
 
   const getColorClass = (color) => {
@@ -123,7 +140,7 @@ const Learn = () => {
                         text-white rounded-full flex flex-col justify-center 
                         items-center gap-1 font-semibold hover:bg-opacity-80 
                         transition-all cursor-pointer shadow-md hover:shadow-lg`}
-                      onClick={() => handleLessonClick(lessonId)}
+                      onClick={(e) => handleLessonClick(lessonId, e, isNextAvailableLesson || isCompleted)}
                     >
                       {isLastLesson ? (
                         <FaTrophy className="text-yellow-400 text-5xl" />
@@ -141,6 +158,57 @@ const Learn = () => {
           </div>
         );
       })}
+
+{showBox && (
+    <div 
+      className="absolute bg-white rounded-lg shadow-lg p-4 w-64 border border-gray-200"
+      style={{ 
+        left: `${boxPosition.x}px`, 
+        top: `${boxPosition.y}px`,
+        zIndex: 10 
+      }}
+    >
+      {user?.life > 0 ? (
+        isClickedLessonAvailable || user?.completedLessons?.includes(selectedLessonId) ? (
+          <div>
+            <h3 className="text-xl font-semibold text-gray-800 mb-3">
+              Discuss your experience
+            </h3>
+            <button
+              onClick={handleStartLesson}
+              className="w-full bg-blue-500 text-white py-2 px-4 rounded-lg hover:bg-blue-600 transition-colors flex items-center justify-center gap-2"
+            >
+              <span>Start</span>
+              <span className="text-sm font-medium">+30 XP</span>
+            </button>
+          </div>
+        ) : (
+          <div className="text-gray-500">
+            <h3 className="text-lg font-semibold mb-2">Discuss your work experience</h3>
+            <p className="text-sm mb-4">Complete all levels above to unlock this!</p>
+            <button
+              disabled
+              className="w-full bg-gray-200 text-gray-400 py-2 px-4 rounded-lg flex items-center justify-center uppercase text-sm font-medium"
+            >
+              LOCKED
+            </button>
+          </div>
+        )
+      ) : (
+        <>
+          <p className="text-gray-700 mb-3">
+            You haven&apos;t life for learning.
+          </p>
+          <button
+            onClick={handlePractice}
+            className="w-full bg-green-500 text-white py-2 px-4 rounded-lg hover:bg-green-600 transition-colors"
+          >
+            Practice for life
+          </button>
+        </>
+      )}
+    </div>
+  )}
     </div>
   );
 };

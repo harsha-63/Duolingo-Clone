@@ -19,9 +19,10 @@ const AudioQuestion = ({
     return <div className="text-center text-gray-500">No question data available</div>;
   }
 
+  
+
   const handleAudioPlay = () => {
     if (!currentQuestion.audioUrl) return;
-    
     setIsPlaying(true);
     const audio = new Audio(currentQuestion.audioUrl);
     audio.onended = () => setIsPlaying(false);
@@ -85,6 +86,43 @@ const AudioQuestion = ({
     <div className="space-y-4 mb-10 px-4 md:px-24 lg:px-96 font-playpen">
       <h2 className="text-2xl font-bold text-gray-800 mb-6">{currentQuestion.questionType}</h2>
       <div className="flex justify-center mb-8">
+       
+        
+        <button
+        onClick={handleAudioPlay}
+        className={`p-6 rounded-full ${isPlaying ? 'bg-blue-100' : 'bg-gray-100'} hover:bg-blue-50 transition-colors`}
+        >
+        <Volume2
+          className={`w-8 h-8 ${isPlaying ? 'text-blue-500' : 'text-gray-500'}`} />
+      </button>
+    </div><input
+        type="text"
+        value={transcriptionInput}
+        onChange={(e) => {
+          const newValue = e.target.value;
+          setTranscriptionInput(newValue);
+          onOptionSelect(newValue);
+        } }
+        className={`w-full p-3 border-2 rounded-lg outline-none ${hasChecked
+            ? isCorrect
+              ? 'border-green-500 bg-green-50'
+              : 'border-red-500 bg-red-50'
+            : 'border-gray-300'}`}
+        placeholder="Type what you hear..."
+        disabled={hasChecked} />
+    </div>
+  );
+
+  const renderReadAloud = () => (
+    <div className="space-y-4 mb-10 px-4 md:px-24 lg:px-96 font-playpen ">
+      <h2 className="text-3xl text-gray-800 mb-3 md:px-10 lg:px-20">{currentQuestion.questionType}</h2>
+      <div className={`bg-white p-6 rounded-lg shadow-sm border mb-8  ${
+        hasChecked
+          ? isCorrect
+            ? 'border-green-500 bg-green-50'
+            : 'border-red-500 bg-red-50'
+          : 'border-gray-200'
+      }`}>
         <button
           onClick={handleAudioPlay}
           className={`p-6 rounded-full ${isPlaying ? 'bg-blue-100' : 'bg-gray-100'} hover:bg-blue-50 transition-colors`}
@@ -93,46 +131,14 @@ const AudioQuestion = ({
             className={`w-8 h-8 ${isPlaying ? 'text-blue-500' : 'text-gray-500'}`}
           />
         </button>
-      </div>
-      <input
-        type="text"
-        value={transcriptionInput}
-        onChange={(e) => {
-          const newValue = e.target.value;
-          setTranscriptionInput(newValue); 
-          onOptionSelect(newValue); 
-      }}
-        className={`w-full p-3 border-2 rounded-lg outline-none ${
-          hasChecked
-            ? isCorrect
-              ? 'border-green-500 bg-green-50'
-              : 'border-red-500 bg-red-50'
-            : 'border-gray-300'
-        }`}
-        placeholder="Type what you hear..."
-        disabled={hasChecked}
-      />
-    </div>
-  );
-
-  const renderReadAloud = () => (
-    <div className="space-y-4 mb-10 px-4 md:px-24 lg:px-96 font-playpen">
-      <h2 className="text-2xl font-bold text-gray-800 mb-6">{currentQuestion.questionType}</h2>
-      <div className={`bg-white p-6 rounded-lg shadow-sm border mb-8 ${
-        hasChecked
-          ? isCorrect
-            ? 'border-green-500 bg-green-50'
-            : 'border-red-500 bg-red-50'
-          : 'border-gray-200'
-      }`}>
-        <p className="text-lg">{currentQuestion.sentence}</p>
+        <span className="text-xl ml-5">  {currentQuestion.sentence}</span>
       </div>
       <div className="flex justify-center">
         <button
           onClick={() => {
             setIsRecording(!isRecording);
             if (isRecording) {
-              handleRecordingComplete('example recorded answer'); // Replace with actual recorded text
+              handleRecordingComplete('example recorded answer'); 
             }
           }}
           className={`p-4 rounded-full ${

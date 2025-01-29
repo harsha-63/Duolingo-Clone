@@ -1,44 +1,26 @@
 import { useContext } from 'react';
 import { AuthContext } from '../Context/AuthContext';
+import { Pencil, Camera, ChevronRight } from 'lucide-react';
 
 const UserProfile = () => {
   const { user } = useContext(AuthContext);
 
   return (
-    <div className="flex flex-col items-start p-8 min-h-screen">
-      {/* Profile Section */}
+    <div className="flex flex-col items-start p-8 min-h-screen font-playpen text-gray-500">
       <div className="flex flex-col items-start">
-        {/* Profile Picture */}
-        <div className="relative w-[660px] h-52 bg-gray-200 flex items-center justify-center mb-4">
-  {/* Profile Picture */}
-  <img
-    src={`/api/placeholder/120/120`}
-    alt="Profile"
-    className="w-32 h-32 "
-  />
-  
-  {/* Edit Icon */}
+        <div className="relative w-[660px] h-56 bg-blue-50 rounded-lg flex items-center justify-center mb-4">
+          <div className="w-32 h-32 bg-blue-200 rounded-full flex items-center justify-center">
+            <Camera className="w-12 h-12 text-blue-400" />
+          </div>
+          
+          {/* Edit Icon */}
           <button
-            className="absolute bottom-4 right-4 bg-blue-500 text-white p-2 rounded-full shadow-md hover:bg-blue-600 transition"
+            className="absolute top-4 right-4 p-2 rounded-lg bg-white/80 backdrop-blur"
             onClick={() => alert("Edit profile picture functionality")}
           >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              className="h-5 w-5"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M15.232 5.232l3.536 3.536M9 11.232l6.232-6.232 3.536 3.536-6.232 6.232H9v-3.536z"
-              />
-            </svg>
+            <Pencil className="h-5 w-5 text-gray-600" />
           </button>
         </div>
-
 
         {/* Username and Join Date */}
         <div>
@@ -67,7 +49,7 @@ const UserProfile = () => {
           <div className="bg-white shadow-md p-4 rounded-lg text-center">
             <div className="text-gray-500 text-sm">Total XP</div>
             <div className="text-xl font-bold">
-              {user?.totalXp ? user.totalXp.toLocaleString() : 0}
+              {user?.xpPoints ? user.xpPoints.toLocaleString() : 0}
             </div>
           </div>
 
@@ -87,66 +69,88 @@ const UserProfile = () => {
 
       {/* Achievements Section */}
       <div className="mt-8 w-full">
-        <h1 className="text-xl font-semibold mb-4">Achievements</h1>
+        <div className="flex justify-between items-center mb-4">
+          <h1 className="text-xl font-semibold">Achievements</h1>
+          <button className="text-blue-500 font-medium flex items-center">
+            VIEW ALL
+            <ChevronRight className="w-4 h-4 ml-1" />
+          </button>
+        </div>
+        
         <div className="space-y-4">
           {/* Achievement 1 */}
           <div className="flex items-center space-x-4 bg-white shadow-md p-4 rounded-lg">
-            <div className="w-12 h-12 bg-red-500 text-white rounded-full flex items-center justify-center">
+            <div className="w-12 h-12 bg-red-500 rounded-lg flex items-center justify-center">
               🔥
             </div>
             <div className="flex-1">
               <div className="flex justify-between items-center">
                 <h2 className="text-lg font-bold">Wildfire</h2>
-                <span className="text-sm text-gray-500">6/7</span>
+                <span className="text-sm text-gray-400">0/3</span>
               </div>
-              <p className="text-sm text-gray-500">Reach a 7 day streak</p>
-              <div className="w-full bg-gray-300 rounded-full h-2 mt-2">
+              <p className="text-sm text-gray-500">Reach a 3 day streak</p>
+              <div className="w-full bg-gray-100 rounded-full h-2 mt-2">
                 <div
-                  className="bg-yellow-400 h-2 rounded-full"
-                  style={{ width: '85%' }}
+                  className="bg-gray-200 h-2 rounded-full"
+                  style={{ width: '0%' }}
                 ></div>
+              </div>
+              <div className="mt-2">
+                <span className="inline-block px-2 py-1 text-xs font-medium bg-gray-100 text-gray-600 rounded">
+                  LEVEL 1
+                </span>
               </div>
             </div>
           </div>
 
           {/* Achievement 2 */}
           <div className="flex items-center space-x-4 bg-white shadow-md p-4 rounded-lg">
-            <div className="w-12 h-12 bg-green-500 text-white rounded-full flex items-center justify-center">
+            <div className="w-12 h-12 bg-green-500 rounded-lg flex items-center justify-center">
               🧙
             </div>
             <div className="flex-1">
               <div className="flex justify-between items-center">
                 <h2 className="text-lg font-bold">Sage</h2>
-                <span className="text-sm text-gray-500">2383/4000</span>
+                <span className="text-sm text-gray-400">0/100</span>
               </div>
-              <p className="text-sm text-gray-500">Earn 4000 XP</p>
-              <div className="w-full bg-gray-300 rounded-full h-2 mt-2">
+              <p className="text-sm text-gray-500">Earn 100 XP</p>
+              <div className="w-full bg-gray-100 rounded-full h-2 mt-2">
                 <div
-                  className="bg-yellow-400 h-2 rounded-full"
-                  style={{ width: '60%' }}
+                  className="bg-gray-200 h-2 rounded-full"
+                  style={{ width: '0%' }}
                 ></div>
+              </div>
+              <div className="mt-2">
+                <span className="inline-block px-2 py-1 text-xs font-medium bg-gray-100 text-gray-600 rounded">
+                  LEVEL 1
+                </span>
               </div>
             </div>
           </div>
 
           {/* Achievement 3 */}
           <div className="flex items-center space-x-4 bg-white shadow-md p-4 rounded-lg">
-            <div className="w-12 h-12 bg-pink-500 text-white rounded-full flex items-center justify-center">
+            <div className="w-12 h-12 bg-red-500 rounded-lg flex items-center justify-center">
               📜
             </div>
             <div className="flex-1">
               <div className="flex justify-between items-center">
                 <h2 className="text-lg font-bold">Scholar</h2>
-                <span className="text-sm text-gray-500">76/100</span>
+                <span className="text-sm text-gray-400">0/50</span>
               </div>
               <p className="text-sm text-gray-500">
-                Learn 100 new words in a single course
+                Learn 50 new words in a single course
               </p>
-              <div className="w-full bg-gray-300 rounded-full h-2 mt-2">
+              <div className="w-full bg-gray-100 rounded-full h-2 mt-2">
                 <div
-                  className="bg-yellow-400 h-2 rounded-full"
-                  style={{ width: '76%' }}
+                  className="bg-gray-200 h-2 rounded-full"
+                  style={{ width: '0%' }}
                 ></div>
+              </div>
+              <div className="mt-2">
+                <span className="inline-block px-2 py-1 text-xs font-medium bg-gray-100 text-gray-600 rounded">
+                  LEVEL 1
+                </span>
               </div>
             </div>
           </div>
