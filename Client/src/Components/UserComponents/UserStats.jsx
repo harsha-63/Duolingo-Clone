@@ -31,7 +31,7 @@ const UserStats = () => {
         {/* Flag */}
         <div className="relative">
           <img
-            src={user?.language || 'path/to/defaultFlag.png'}
+            src={user?.language || 'https://d35aaqx5ub95lt.cloudfront.net/images/borderlessFlags/b9817d83179e278c91771d903953bfc6.svg'}
             alt={user?.language || 'Language Flag'}
             className="w-8 h-6"
             onMouseEnter={() => setHoveredStat('flag')}
@@ -110,10 +110,15 @@ const UserStats = () => {
             <span className="text-blue-500">{user?.gems || 500}</span>
 
           </div>
-          <Tooltip isVisible={showGems}>
-            <h3 className="text-lg font-bold mb-2">Gems</h3>
-            <p className="text-gray-600">You have {user.gems} gems</p>
-            <button className="mt-2 text-blue-500 font-bold">GO TO SHOP</button>
+          <Tooltip isVisible={showGems} className="w-64 flex flex-row items-center  rounded-2xl">
+            <div>
+            <img src="https://d35aaqx5ub95lt.cloudfront.net/vendor/33b35ed687f7caabe24c79829a1b98a3.svg" alt="" />
+            </div>
+            <div>
+            <h3 className="text-lg font-semibold font-playpen mb-2">Gems</h3>
+            <p className="text-gray-600 font-playpen">You have {user.gems} gems</p>
+            <NavLink to="/shop" className="mt-2 text-blue-500 font-semibold font-playpen">GO TO SHOP</NavLink>
+            </div>
           </Tooltip>
         </div>
 
@@ -132,26 +137,27 @@ const UserStats = () => {
          <span className="text-red-500">{user?.life ?? 5}</span>
 
           </div>
-          <Tooltip isVisible={showHearts}>
-            <h3 className="text-lg font-bold mb-2">Hearts</h3>
-            <p className="text-gray-600 mb-4">You have full hearts</p>
-            <p className="text-gray-500">Keep on learning</p>
+          <Tooltip isVisible={showHearts} className="w-64 flex flex-row items-center  rounded-2xl">
+            <h3 className="text-lg font-bold mb-2 font-playpen">Hearts</h3>
+            <p className="text-gray-600 mb-4 font-playpen">You have {user.life||'full'} hearts</p>
+            <p className="text-gray-500 font-playpen">Keep on learning</p>
             <div className="mt-4 space-y-2">
               <button className="w-full py-2 px-4 rounded-xl border border-gray-200 flex items-center justify-between">
-                <div className="flex items-center gap-2">
-                  <span className="text-purple-600">∞</span>
+                <div className="flex items-center gap-2 font-playpen text-sm">
+                  <img src="https://d35aaqx5ub95lt.cloudfront.net/images/hearts/4f3842c690acf9bf0d4b06e6ab2fffcf.svg" alt="" />
                   <span>UNLIMITED HEARTS</span>
                 </div>
                 <span className="text-purple-600">FREE TRIAL</span>
               </button>
-              <button className="w-full py-2 px-4 rounded-xl border border-gray-200 flex items-center justify-between">
+              <button className="w-full py-2 px-4 rounded-xl border border-gray-200 flex items-center justify-between font-playpen">
+                <img src={user.life<5?"https://d35aaqx5ub95lt.cloudfront.net/images/hearts/8fdba477c56a8eeb23f0f7e67fdec6d9.svg":"https://d35aaqx5ub95lt.cloudfront.net/images/hearts/e88ae1259cc55c279da4650952269a7b.svg"} alt="" />
                 <span>REFILL HEARTS</span>
                 <span className="flex items-center gap-1">
-                  <img src="/api/placeholder/16/16" alt="Gems" className="w-4 h-4" />
+                  <img src="https://d35aaqx5ub95lt.cloudfront.net/vendor/45c14e05be9c1af1d7d0b54c6eed7eee.svg" alt="Gems" className="w-4 h-4" />
                   350
                 </span>
               </button>
-              <button className="w-full py-2 px-4 rounded-xl border border-gray-200 text-left">
+              <button className="w-full py-2 px-4 rounded-xl border border-gray-200 text-left font-playpen">
                 PRACTICE TO EARN HEARTS
               </button>
             </div>
@@ -160,26 +166,28 @@ const UserStats = () => {
       </div>
 
       {/* Unlock Leaderboards Section */}
-      <div className="bg-white p-6 rounded-2xl shadow-md mb-6">
-        <h2 className="text-lg font-semibold mb-2 text-gray-700">Unlock Leaderboards!</h2>
+      
+      <div className="bg-white p-6 rounded-2xl shadow-md mb-6 font-playpen">
+        <h2 className="text-xl font-semibold mb-2 text-gray-700">Unlock Leaderboards!</h2>
         <div className="flex items-center">
           <img
-            src="/api/placeholder/48/48"
+            src="https://d35aaqx5ub95lt.cloudfront.net/vendor/d1f31f71a5b1d513184cc278d910cb33.svg"
             alt="Leaderboard Icon"
             className="w-12 h-12 mr-4"
           />
-          <span className="text-gray-600">
+          <span className="text-gray-600 text-base">
             Complete 10 more lessons to start competing
           </span>
         </div>
       </div>
 
       {/* Daily Quests Section */}
-      <div className="bg-white p-6 rounded-2xl shadow-md mb-6">
-        <h2 className="text-lg font-semibold text-gray-700">Daily Quests</h2>
-        <p className="text-sm text-gray-600">Complete your daily tasks for rewards!</p>
+      <div className="bg-white p-6 rounded-2xl shadow-md mb-6 font-playpen">
+        <h2 className="text-xl font-semibold text-gray-700">Daily Quests</h2>
+        <p className="text-base text-gray-600">Complete your daily tasks for rewards!</p>
       </div>
-
+      {!user || Object.keys(user).length === 0 ?(
+        <>
       {/* Create Profile Section */}
       <div className="bg-white py-6  rounded-2xl shadow-md mb-6">
         <h2 className="text-lg font-semibold text-gray-700 text-center">
@@ -196,6 +204,9 @@ const UserStats = () => {
           </NavLink>
         </div>
       </div>
+      </>):null }
+       
+
 
       {/* Footer */}
       <footer className="text-center text-sm font-semibold text-gray-400 font-playpen">
@@ -216,6 +227,9 @@ const UserStats = () => {
 };
 
 export default UserStats;
+// https://d35aaqx5ub95lt.cloudfront.net/vendor/33b35ed687f7caabe24c79829a1b98a3.svg
+// https://d35aaqx5ub95lt.cloudfront.net/images/hearts/4f3842c690acf9bf0d4b06e6ab2fffcf.svg
+// https://d35aaqx5ub95lt.cloudfront.net/images/hearts/e88ae1259cc55c279da4650952269a7b.svg
 
 
 
@@ -228,3 +242,9 @@ export default UserStats;
 // https://d35aaqx5ub95lt.cloudfront.net/vendor/ba95e6081679d9d7e8c132da5cfce1ec.svg
 // https://d35aaqx5ub95lt.cloudfront.net/vendor/45c14e05be9c1af1d7d0b54c6eed7eee.svg
 // https://d35aaqx5ub95lt.cloudfront.net/images/hearts/8fdba477c56a8eeb23f0f7e67fdec6d9.svg
+//https://d35aaqx5ub95lt.cloudfront.net/images/7a24dbe6c243d2bbf8b6c8aad73dc941.svg
+//https://d35aaqx5ub95lt.cloudfront.net/images/borderlessFlags/b9817d83179e278c91771d903953bfc6.svg
+//https://d35aaqx5ub95lt.cloudfront.net/images/profile/7726fdb7b0ed109a0e0fe87517259807.svg
+//https://d35aaqx5ub95lt.cloudfront.net/images/leagues/1b4fb092de75e4ecefd8e92f10b4ddd2.svg
+//https://d35aaqx5ub95lt.cloudfront.net/images/profile/a925a18c6be921a81bf0e13102983168.svg
+//https://d35aaqx5ub95lt.cloudfront.net/images/owls/abc1b46bd1381853d2a2f7e46d7ed1f8.svg

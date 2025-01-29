@@ -1,19 +1,18 @@
 import { useContext } from 'react';
 import { AuthContext } from '../Context/AuthContext';
-import { Pencil, Camera, ChevronRight } from 'lucide-react';
+import { Pencil, ChevronRight } from 'lucide-react';
 
 const UserProfile = () => {
   const { user } = useContext(AuthContext);
 
   return (
-    <div className="flex flex-col items-start p-8 min-h-screen font-playpen text-gray-500">
+    <div className="flex flex-col items-start  p-8 min-h-screen font-playpen text-gray-500">
       <div className="flex flex-col items-start">
         <div className="relative w-[660px] h-56 bg-blue-50 rounded-lg flex items-center justify-center mb-4">
-          <div className="w-32 h-32 bg-blue-200 rounded-full flex items-center justify-center">
-            <Camera className="w-12 h-12 text-blue-400" />
+          <div className="w-32 h-32   flex items-center justify-center">
+            <img src='https://d35aaqx5ub95lt.cloudfront.net/images/7a24dbe6c243d2bbf8b6c8aad73dc941.svg' alt='' className='w-72 h-64'/>
           </div>
           
-          {/* Edit Icon */}
           <button
             className="absolute top-4 right-4 p-2 rounded-lg bg-white/80 backdrop-blur"
             onClick={() => alert("Edit profile picture functionality")}
@@ -22,7 +21,6 @@ const UserProfile = () => {
           </button>
         </div>
 
-        {/* Username and Join Date */}
         <div>
           <h2 className="text-xl font-bold text-gray-800">{user?.username}</h2>
           <p className="text-sm text-gray-500">Joined {user?.createdAt}</p>
@@ -32,20 +30,23 @@ const UserProfile = () => {
         <div className="flex space-x-8 mt-4">
           <span className="text-blue-500 text-base font-medium">0 Following</span>
           <span className="text-blue-500 text-base font-medium">0 Followers</span>
+          <span className='ml-20'> <img src='https://d35aaqx5ub95lt.cloudfront.net/images/borderlessFlags/b9817d83179e278c91771d903953bfc6.svg' alt='' className='w-8 h-8'/></span>
         </div>
-      </div>
+      </div> 
 
-      {/* Statistics Section */}
+     
+
+     
       <div className="mt-7 w-full">
         <h1 className="text-xl font-semibold mb-4">Statistics</h1>
         <div className="grid grid-cols-1 sm:grid-cols-1 lg:grid-cols-2 gap-6">
-          {/* Day Streak */}
+         
           <div className="bg-white shadow-md p-4 rounded-lg text-center">
             <div className="text-gray-500 text-sm">Day Streak</div>
             <div className="text-xl font-bold">{user?.streak || 0}</div>
           </div>
 
-          {/* Total XP */}
+         
           <div className="bg-white shadow-md p-4 rounded-lg text-center">
             <div className="text-gray-500 text-sm">Total XP</div>
             <div className="text-xl font-bold">
@@ -53,21 +54,18 @@ const UserProfile = () => {
             </div>
           </div>
 
-          {/* Current League */}
           <div className="bg-white shadow-md p-4 rounded-lg text-center">
             <div className="text-gray-500 text-sm">Current League</div>
             <div className="text-xl font-bold">{user?.currentLeague || 'None'}</div>
           </div>
 
-          {/* Top 3 Finishes */}
+        
           <div className="bg-white shadow-md p-4 rounded-lg text-center">
             <div className="text-gray-500 text-sm">Top 3 Finishes</div>
             <div className="text-xl font-bold">{user?.topFinishes || 0}</div>
           </div>
         </div>
       </div>
-
-      {/* Achievements Section */}
       <div className="mt-8 w-full">
         <div className="flex justify-between items-center mb-4">
           <h1 className="text-xl font-semibold">Achievements</h1>
@@ -78,7 +76,6 @@ const UserProfile = () => {
         </div>
         
         <div className="space-y-4">
-          {/* Achievement 1 */}
           <div className="flex items-center space-x-4 bg-white shadow-md p-4 rounded-lg">
             <div className="w-12 h-12 bg-red-500 rounded-lg flex items-center justify-center">
               🔥

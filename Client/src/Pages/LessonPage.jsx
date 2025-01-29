@@ -162,7 +162,7 @@ function LessonPage() {
     if (!isAnswerCorrect) {
       try {
         await reduceLife();
-        if (userStats.life <= 1) {
+        if (userStats.life < 1) {
           setShowZeroLivesModal(true);
         } else {
           setShowModal(true);
