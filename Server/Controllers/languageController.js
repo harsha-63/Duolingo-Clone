@@ -1,5 +1,5 @@
 import Language from '../Models/languageModel.js';
-import CustomError from '../utils/CustomError.js';  
+import CustomError from '../Utils/customError.js';  
 
 export const getLanguages = async (req, res, next) => {
   const languages = await Language.find();
