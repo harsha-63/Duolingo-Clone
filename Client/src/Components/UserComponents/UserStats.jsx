@@ -25,15 +25,16 @@ const UserStats = () => {
     )
   );
   return (
-    <div className="max-w-4xl mx-auto p-4 pr-16">
+    <>
+    <div className="max-w-4xl mx-auto p-4 pr-16 max-md:p-0 max-md:-mb-4">
       {/* Stats Bar */}
-      <div className="flex items-center justify-between  p-4 mb-6">
+      <div className="flex items-center justify-between p-4 mb-6 max-md:p-1 max-md:mb-0 ">
         {/* Flag */}
         <div className="relative">
           <img
             src={user?.language || 'https://d35aaqx5ub95lt.cloudfront.net/images/borderlessFlags/b9817d83179e278c91771d903953bfc6.svg'}
             alt={user?.language || 'Language Flag'}
-            className="w-8 h-6"
+            className="w-8 h-6 max-md:w-10 max-md:h-8"
             onMouseEnter={() => setHoveredStat('flag')}
             onMouseLeave={() => setHoveredStat(null)}
           />
@@ -52,9 +53,9 @@ const UserStats = () => {
             <img
               src="https://d35aaqx5ub95lt.cloudfront.net/vendor/ba95e6081679d9d7e8c132da5cfce1ec.svg"
               alt="Streak"
-              className="w-6 h-6"
+              className="w-6 h-6 max-md:w-8 max-md:h-8"
             />
-           <span className="text-gray-700">{user?.streak || 0}</span>
+           <span className="text-gray-700 font-playpen max-md:text-base max-md:font-semibold">{user?.streak || 0}</span>
 
           </div>
           <Tooltip isVisible={showStreak}>
@@ -105,9 +106,9 @@ const UserStats = () => {
             <img
               src="https://d35aaqx5ub95lt.cloudfront.net/vendor/45c14e05be9c1af1d7d0b54c6eed7eee.svg"
               alt="Gems"
-              className="w-6 h-6"
+              className="w-6 h-6 max-md:w-8 max-md:h-8"
             />
-            <span className="text-blue-500">{user?.gems || 500}</span>
+            <span className="text-blue-500 font-playpen max-md:text-base max-md:font-semibold">{user?.gems || 500}</span>
 
           </div>
           <Tooltip isVisible={showGems} className="w-64 flex flex-row items-center  rounded-2xl">
@@ -132,9 +133,9 @@ const UserStats = () => {
             <img
               src="https://d35aaqx5ub95lt.cloudfront.net/images/hearts/8fdba477c56a8eeb23f0f7e67fdec6d9.svg"
               alt="Hearts"
-              className="w-6 h-6"
+              className="w-6 h-6 max-md:w-8 max-md:h-8"
             />
-         <span className="text-red-500">{user?.life ?? 5}</span>
+         <span className="text-red-500 font-playpen max-md:text-base max-md:font-semibold">{user?.life ?? 5}</span>
 
           </div>
           <Tooltip isVisible={showHearts} className="w-64 flex flex-row items-center  rounded-2xl">
@@ -167,7 +168,7 @@ const UserStats = () => {
 
       {/* Unlock Leaderboards Section */}
       
-      <div className="bg-white p-6 rounded-2xl shadow-md mb-6 font-playpen">
+      <div className="bg-white p-6 rounded-2xl shadow-md mb-6 font-playpen max-md:hidden">
         <h2 className="text-xl font-semibold mb-2 text-gray-700">Unlock Leaderboards!</h2>
         <div className="flex items-center">
           <img
@@ -182,14 +183,14 @@ const UserStats = () => {
       </div>
 
       {/* Daily Quests Section */}
-      <div className="bg-white p-6 rounded-2xl shadow-md mb-6 font-playpen">
+      <div className="bg-white p-6 rounded-2xl shadow-md mb-6 font-playpen max-md:hidden">
         <h2 className="text-xl font-semibold text-gray-700">Daily Quests</h2>
         <p className="text-base text-gray-600">Complete your daily tasks for rewards!</p>
       </div>
       {!user || Object.keys(user).length === 0 ?(
         <>
       {/* Create Profile Section */}
-      <div className="bg-white py-6  rounded-2xl shadow-md mb-6">
+      <div className="bg-white py-6  rounded-2xl shadow-md mb-6 max-md:hidden">
         <h2 className="text-lg font-semibold text-gray-700 text-center">
           Create a profile to save your progress!
         </h2>
@@ -209,7 +210,7 @@ const UserStats = () => {
 
 
       {/* Footer */}
-      <footer className="text-center text-sm font-semibold text-gray-400 font-playpen">
+      <footer className="text-center text-sm font-semibold text-gray-400 font-playpen max-md:hidden">
         <div className="space-x-10">
           <NavLink to="/about" className="hover:text-blue-500">About</NavLink>
           <NavLink to="/privacy" className="hover:text-blue-500">Privacy</NavLink>
@@ -223,6 +224,7 @@ const UserStats = () => {
         </div>
       </footer>
     </div>
+   </>
   );
 };
 

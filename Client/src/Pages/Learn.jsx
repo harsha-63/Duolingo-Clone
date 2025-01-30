@@ -69,23 +69,23 @@ const Learn = () => {
   };
 
   return (
-    <div className="max-w-7xl mx-auto p-6 ">
+    <div className="max-w-7xl mx-auto p-6  max-md:p-0 ">
       {sections.map((section, sectionIndex) => {
         const nextAvailableLessonIndex = determineNextAvailableLesson(section.lessons)
 
         return (
-          <div key={section.id} className="mb-32 relative mx-3">
+          <div key={section.id} className="mb-16 md:mb-32 relative mx-2 md:mx-3  max-md:mt-20 ">
             <div
               className={`flex justify-between items-center mb-10 p-4 border-2 rounded-lg ${getColorClass(
                 section.color
               )}`}
             >
               <div className="flex flex-col space-y-2 p-1">
-                <span className="text-lg font-semibold text-white">Section {section.number}</span>
-                <h2 className="text-2xl font-bold font-playpen text-white">{section.title}</h2>
+                <span className="text-lg max-md:text-sm font-semibold text-white">Section {section.number}</span>
+                <h2 className="text-2xl max-md:text-lg font-bold font-playpen text-white">{section.title}</h2>
               </div>
-              <div className="flex items-center space-x-2 border-l-2 border-white pl-4">
-                <span className="text-lg font-semibold text-white font-playpen">Guide Book</span>
+              <div className="flex items-center space-x-2 border-l-2 border-white pl-4 ">
+                <span className="text-lg max-md:hidden font-semibold text-white font-playpen">Guide Book</span>
                 <button className="text-white p-3 rounded-full transition-colors" title="Guide Book">
                   <FaBook />
                 </button>
@@ -93,7 +93,7 @@ const Learn = () => {
             </div>
 
             <div
-              className="relative mt-12"
+              className="relative mt-12 "
               style={{
                 height: `${section.lessons.length * 120}px`,
                 marginLeft: '160px',
