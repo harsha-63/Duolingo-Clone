@@ -12,7 +12,7 @@ const RegisterSection = () => {
   useEffect(() => {
     const fetchLanguages = async () => {
       try {
-        const response = await axios.get('http://localhost:4000/public/lang'); 
+        const response = await axios.get(`${import.meta.env.VITE_API_URL}/public/lang`); 
         setLanguages(response.data);
         console.log(response.data);
         setLoading(false);

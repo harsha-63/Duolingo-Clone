@@ -49,13 +49,13 @@ function LessonPage() {
     try {
       setIsLoading(true);
       const response = await axios.get(
-        `http://localhost:4000/user/lesson/${lessonId}/questions`
+        `${import.meta.env.VITE_API_URL}/user/lesson/${lessonId}/questions`
       );
       setLessonQuestions(response.data);
       
       if (response.data.length > 0) {
         const firstQuestion = await axios.get(
-          `http://localhost:4000/user/question/${response.data[0].id}?isText=${response.data[0].isText}`
+          `${import.meta.env.VITE_API_URL}user/question/${response.data[0].id}?isText=${response.data[0].isText}`
         );
         setCurrentQuestion(firstQuestion.data);
       }
@@ -81,7 +81,7 @@ function LessonPage() {
   const fetchQuestionData = async (questionId, isText) => {
     try {
       const response = await axios.get(
-        `http://localhost:4000/user/question/${questionId}?isText=${isText}`
+        `${import.meta.env.VITE_API_URL}/user/question/${questionId}?isText=${isText}`
       );
       return response.data;
     } catch (error) {

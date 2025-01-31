@@ -12,7 +12,7 @@ const HomePage = () => {
   useEffect(() => {
     const fetchLanguages = async () => {
       try {
-        const response = await axios.get('http://localhost:4000/public/lang');
+        const response = await axios.get(`${import.meta.env.VITE_API_URL}/public/lang`);
         if (Array.isArray(response.data)) {
           setLanguages(response.data);
           setSelectedLanguage(response.data[0]);

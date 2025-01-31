@@ -37,13 +37,13 @@ const LessonProvider = ({ children }) => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const sectionsResponse = await axios.get('http://localhost:4000/user/sections');
+        const sectionsResponse = await axios.get(`${import.meta.env.VITE_API_URL}/user/sections`);
         setSections(sectionsResponse.data);
         
 
         if (sectionsResponse.data.length > 0) {
           const firstSectionId = sectionsResponse.data[0]._id;
-          const lessonsResponse = await axios.get(`http://localhost:4000/user/sections/${firstSectionId}/lessons`);
+          const lessonsResponse = await axios.get(`${import.meta.env.VITE_API_URL}/user/sections/${firstSectionId}/lessons`);
           setLessons(lessonsResponse.data);
           console.log(lessonsResponse.data)
          
@@ -78,7 +78,7 @@ const LessonProvider = ({ children }) => {
     try {
       setLoading(true);
       const userId = localStorage.getItem('userId');
-      const response = await axios.post('http://localhost:4000/user/lesson/start', {
+      const response = await axios.post(`${import.meta.env.VITE_API_URL}/user/lesson/start`, {
         userId,
         lessonId,
       });
@@ -105,7 +105,7 @@ const LessonProvider = ({ children }) => {
       const userId = getUserId();
       if (!userId) throw new Error('User ID not found');
   
-      const response = await axios.post('http://localhost:4000/user/lesson/complete', {
+      const response = await axios.post(`${import.meta.env.VITE_API_URL}/user/lesson/complete`, {
         userId: userId,
         lessonId: lessonId, 
       });

@@ -13,7 +13,7 @@ const AuthContextProvider = ({ children }) => {
 
   const login = async (email, password) => {
     try {
-      const response = await axios.post("http://localhost:4000/auth/login", { email, password });
+      const response = await axios.post(`${import.meta.env.VITE_API_URL}/auth/login`, { email, password });
       const { accessToken, refreshToken } = response.data;
       const user = response.data.user
       console.log(response.data.message); 
@@ -29,7 +29,7 @@ const AuthContextProvider = ({ children }) => {
   
   const register = async (username, email, password, age) => {
     try {
-      const response = await axios.post("http://localhost:4000/auth/register", { username, email, password, age });
+      const response = await axios.post(`${import.meta.env.VITE_API_URL}/auth/register`, { username, email, password, age });
       console.log(response.data.message); 
     } catch (error) {
       console.error("Registration error", error);

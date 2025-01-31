@@ -59,7 +59,7 @@ const UserStatisticsProvider = ({ children }) => {
       const userId = getUserId();
       if (!userId) throw new Error('User ID not found');
 
-      const response = await axios.post('http://localhost:4000/user/reduce', {
+      const response = await axios.post( `${import.meta.env.VITE_API_URL}/user/reduce`, {
         userId: userId,
       });
       
@@ -85,7 +85,7 @@ const UserStatisticsProvider = ({ children }) => {
       const userId = getUserId();
       if (!userId) throw new Error('User ID not found');
 
-      const response = await axios.post('http://localhost:4000/user/refill', {
+      const response = await axios.post( `${import.meta.env.VITE_API_URL}/user/refill`, {
         userId: userId,
       });
       
@@ -109,7 +109,7 @@ const UserStatisticsProvider = ({ children }) => {
       const userId = getUserId();
       if (!userId) throw new Error('User ID not found');
 
-      const response = await axios.post('http://localhost:4000/user/reward', {
+      const response = await axios.post(`${import.meta.env.VITE_API_URL}/user/reward`, {
         userId: userId,
       });
       
@@ -134,7 +134,7 @@ const UserStatisticsProvider = ({ children }) => {
       const userId = getUserId();
       if (!userId) throw new Error('User ID not found');
 
-      const response = await axios.post('http://localhost:4000/user/xpPoints', {
+      const response = await axios.post(`${import.meta.env.VITE_API_URL}/user/xpPoints`, {
         userId: userId,
       });
       
