@@ -55,7 +55,7 @@ function LessonPage() {
       
       if (response.data.length > 0) {
         const firstQuestion = await axios.get(
-          `${import.meta.env.VITE_API_URL}user/question/${response.data[0].id}?isText=${response.data[0].isText}`
+          `${import.meta.env.VITE_API_URL}/user/question/${response.data[0].id}?isText=${response.data[0].isText}`
         );
         setCurrentQuestion(firstQuestion.data);
       }
