@@ -26,15 +26,15 @@ const UserStats = () => {
   );
   return (
     <>
-    <div className="max-w-4xl mx-auto p-4 pr-16 max-md:p-0 max-md:-mb-4">
+    <div className="max-w-4xl mx-auto p-4 pr-16 max-md:p-0 max-md:-mb-1">
       {/* Stats Bar */}
-      <div className="flex items-center justify-between p-4 mb-6 max-md:p-1 max-md:mb-0 ">
+      <div className="flex items-center justify-between p-4 mb-6 max-md:p-0 max-md:mb-0 ">
         {/* Flag */}
         <div className="relative">
           <img
             src={user?.language || 'https://d35aaqx5ub95lt.cloudfront.net/images/borderlessFlags/b9817d83179e278c91771d903953bfc6.svg'}
             alt={user?.language || 'Language Flag'}
-            className="w-8 h-6 max-md:w-10 max-md:h-8"
+            className="w-8 h-6 max-md:w-8 max-md:h-8"
             onMouseEnter={() => setHoveredStat('flag')}
             onMouseLeave={() => setHoveredStat(null)}
           />
@@ -53,13 +53,13 @@ const UserStats = () => {
             <img
               src="https://d35aaqx5ub95lt.cloudfront.net/vendor/ba95e6081679d9d7e8c132da5cfce1ec.svg"
               alt="Streak"
-              className="w-6 h-6 max-md:w-8 max-md:h-8"
+              className="w-6 h-6 max-md:w-7 max-md:h-7"
             />
            <span className="text-gray-700 font-playpen max-md:text-base max-md:font-semibold">{user?.streak || 0}</span>
 
           </div>
           <Tooltip isVisible={showStreak}>
-            <h3 className="text-lg font-bold mb-2">{user.streak} day streak</h3>
+            <h3 className="text-base font-bold mb-2">{user.streak} day streak</h3>
             <p className="text-gray-600">Do a lesson today to extend your streak!</p>
             <div className="mt-4">
               <div className="bg-gray-100 rounded-full h-2 w-full">
@@ -106,7 +106,7 @@ const UserStats = () => {
             <img
               src="https://d35aaqx5ub95lt.cloudfront.net/vendor/45c14e05be9c1af1d7d0b54c6eed7eee.svg"
               alt="Gems"
-              className="w-6 h-6 max-md:w-8 max-md:h-8"
+              className="w-6 h-6 max-md:w-7 max-md:h-7"
             />
             <span className="text-blue-500 font-playpen max-md:text-base max-md:font-semibold">{user?.gems || 500}</span>
 
@@ -133,7 +133,7 @@ const UserStats = () => {
             <img
               src="https://d35aaqx5ub95lt.cloudfront.net/images/hearts/8fdba477c56a8eeb23f0f7e67fdec6d9.svg"
               alt="Hearts"
-              className="w-6 h-6 max-md:w-8 max-md:h-8"
+              className="w-6 h-6 max-md:w-7 max-md:h-7"
             />
          <span className="text-red-500 font-playpen max-md:text-base max-md:font-semibold">{user?.life ?? 5}</span>
 

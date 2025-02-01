@@ -37,7 +37,7 @@ const MainPage = () => {
     <Content activeContent={activeContent} />
   </div>
 
-  <div className="w-2/6 p-6 bg-white overflow-y-auto hide-scrollbar  max-md:w-full max-md:fixed max-md:top-0 max-md:left-0 max-md:z-50 max-md:bg-white">
+  <div className="w-2/6 p-6 bg-white overflow-y-auto hide-scrollbar  max-md:w-full max-md:fixed max-md:top-0 max-md:left-0 max-md:z-50 max-md:bg-white max-md:p-3">
     <UserStats />
   </div>
 </div>

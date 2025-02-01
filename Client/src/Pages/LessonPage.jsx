@@ -29,6 +29,7 @@ function LessonPage() {
   const [currentQuestion, setCurrentQuestion] = useState(null);
   const [lessonQuestions, setLessonQuestions] = useState([]);
   const [selectedOption, setSelectedOption] = useState("");
+  const [blobUrl, setBlobUrl] = useState("");
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
   const [hasChecked, setHasChecked] = useState(false);
@@ -137,6 +138,12 @@ function LessonPage() {
     }
   };
 
+  const handleRecordingComplete = (blob) => {
+    setBlobUrl(URL.createObjectURL(blob));
+    console.log(blob);
+  };
+
+
 
   const handleCheck = async () => {
     if (!selectedOption || lessonCompleted) return;
@@ -148,8 +155,6 @@ function LessonPage() {
     if (currentQuestion.isText) {
       isAnswerCorrect = selectedOption === currentQuestion.options[0].text;
     } else {
-      console.log('Processed input:', selectedOption);
-      console.log('Processed input length:', selectedOption.length);
       isAnswerCorrect = selectedOption.trim().toLowerCase() === currentQuestion.correctAnswer.trim().toLowerCase();
       console.log(selectedOption.trim().toLowerCase());
       console.log(currentQuestion.correctAnswer.trim().toLowerCase());
@@ -347,6 +352,7 @@ function LessonPage() {
             hasChecked={hasChecked}
             isCorrect={isCorrect}
             onOptionSelect={handleOptionSelect}
+            onRecordingComplete={handleRecordingComplete}
            />        
         )}
         
