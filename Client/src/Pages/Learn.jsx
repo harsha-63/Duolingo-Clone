@@ -93,10 +93,10 @@ const Learn = () => {
             </div>
 
             <div
-              className="relative mt-12 "
+              className="relative mt-12  ml-[200px] max-md:ml-0 "
               style={{
                 height: `${section.lessons.length * 120}px`,
-                marginLeft: '160px',
+                
               }}
             >
               <div
@@ -106,7 +106,7 @@ const Learn = () => {
                   transform: 'translateY(-50%)',
                 }}
               >
-                <img src={section.character} alt="Section Character" className="w-96 h-96" />
+                <img src={section.character} alt="Section Character" className="w-96 h-96 max-md:w-72 max-md:h-72 max-md:ml-24" />
               </div>
 
               {section.lessons.map((lessonId, lessonIndex) => {
@@ -128,7 +128,7 @@ const Learn = () => {
                 return (
                   <div
                     key={lessonIndex}
-                    className="absolute"
+                    className="absolute "
                     style={{
                       left: `${position.x}px`,
                       top: `${position.y}px`,
