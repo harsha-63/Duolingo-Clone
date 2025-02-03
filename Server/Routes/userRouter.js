@@ -2,12 +2,17 @@
 import express from 'express';
 import { getAllSections,getSectionById,getLessonsInSection,getLessonById,getQuestionsForLesson,startLesson,resetLessonProgress,completeLesson,getQuestionById } from '../Controllers/lessonController.js';
 import { reduceLife, refillLife, rewardGems,xpPoints } from '../Controllers/statisticController.js';
+import { getAllUsers } from '../Controllers/userController.js';
 
 
 
 const userRouter = express.Router();  
 
 userRouter
+
+.get('/users',getAllUsers)
+
+
 .get('/sections', getAllSections)
 .get('/sections/:id', getSectionById)
 .get('/sections/:id/lessons', getLessonsInSection)

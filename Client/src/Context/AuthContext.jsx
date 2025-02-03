@@ -1,5 +1,6 @@
 import { createContext, useState, } from "react";
 import axios from "axios";
+import axiosInstance from "../Utils/axiosInstence";
 
 // eslint-disable-next-line react-refresh/only-export-components
 export const AuthContext = createContext();
@@ -10,6 +11,21 @@ const AuthContextProvider = ({ children }) => {
     const storedUser = localStorage.getItem("user");
     return storedUser ? JSON.parse(storedUser) :[];
   });
+ 
+
+
+
+  const getAllUsers = async () => {
+    try {
+      const response = await axiosInstance.get(`user/users`, {
+      });
+      return response.data;
+
+    } catch (error) {
+      console.error("Error fetching users", error);
+      throw error;
+    }
+  };
 
   const login = async (email, password) => {
     try {
@@ -44,7 +60,7 @@ const AuthContextProvider = ({ children }) => {
   };
 
   return (
-    <AuthContext.Provider value={{ user, setUser, login, register, logout }}>
+    <AuthContext.Provider value={{ user, setUser, login, register, logout,getAllUsers }}>
       {children}
     </AuthContext.Provider>
   );

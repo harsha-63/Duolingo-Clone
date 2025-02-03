@@ -12,7 +12,6 @@ import { LessonContext } from "../Context/LessonContext";
 import TextQuestion from "../Components/QuestionComponents/TextQues";
 import AudioQuestion from "../Components/QuestionComponents/AudioQues";
 
-
 // eslint-disable-next-line react/prop-types
 const ProgressBar = ({ current, total }) => (
   <div className="w-full bg-gray-200 h-3 rounded-full overflow-hidden">
@@ -43,7 +42,7 @@ function LessonPage() {
   
   const navigate = useNavigate();
   const { user } = useContext(AuthContext);
-  const { userStats, reduceLife, refillLife, rewardGems,xpPoints } = useContext(UserStatisticsContext);
+  const { userStats, reduceLife, refillLife, rewardGems, xpPoints } = useContext(UserStatisticsContext);
   const { completeLesson } = useContext(LessonContext);
 
   const fetchLessonQuestions = useCallback(async () => {
@@ -92,21 +91,19 @@ function LessonPage() {
   };
 
   const handleClose = () => {
-   setShowCloseModal(true)
+    setShowCloseModal(true);
   };
-    
 
   const handleRestoreLives = async () => {
     if (userStats.life > 0) return;
     
     try {
-      if(userStats.gems < 350){
+      if (userStats.gems < 350) {
         setIsVisible(true);
         setShowZeroLivesModal(false);
-      }
-      else{
-      await refillLife();
-      setShowZeroLivesModal(false);
+      } else {
+        await refillLife();
+        setShowZeroLivesModal(false);
       }
     } catch (error) {
       console.error('Failed to refill lives:', error);
@@ -129,8 +126,6 @@ function LessonPage() {
       setLessonCompleted(true);
     }
   }, [lessonQuestions, currentQuestionIndex]);
-  
-
 
   const handleOptionSelect = (option) => {
     if (!hasChecked) {
@@ -138,12 +133,14 @@ function LessonPage() {
     }
   };
 
-  const handleRecordingComplete = (blob) => {
-    setBlobUrl(URL.createObjectURL(blob));
-    console.log(blob);
+  const handleRecordingComplete = (data) => {
+    if (data && data.blobUrl) {
+      setBlobUrl(data.blobUrl);
+      if (data.transcribedText) {
+        setSelectedOption(data.transcribedText);
+      }
+    }
   };
-
-
 
   const handleCheck = async () => {
     if (!selectedOption || lessonCompleted) return;
@@ -156,10 +153,6 @@ function LessonPage() {
       isAnswerCorrect = selectedOption === currentQuestion.options[0].text;
     } else {
       isAnswerCorrect = selectedOption.trim().toLowerCase() === currentQuestion.correctAnswer.trim().toLowerCase();
-      console.log(selectedOption.trim().toLowerCase());
-      console.log(currentQuestion.correctAnswer.trim().toLowerCase());
-      
-      console.log(isAnswerCorrect);
     }
   
     setIsCorrect(isAnswerCorrect);
@@ -178,8 +171,6 @@ function LessonPage() {
       }
     }
   };
-  
-  
 
   const handleNext = async () => {
     if (currentQuestionIndex < lessonQuestions.length - 1) {
@@ -192,12 +183,12 @@ function LessonPage() {
         setCurrentQuestionIndex(nextIndex);
         setCurrentQuestion(nextQuestion);
         setSelectedOption("");
+        setBlobUrl("");
         setHasChecked(false);
         setIsCorrect(false);
         setShowModal(false);
       } catch (error) {
-        console.log(error);
-        
+        console.error(error);
         setError("Failed to load next question");
       }
     } else {
@@ -215,14 +206,14 @@ function LessonPage() {
     if (!lessonCompleted) return;
     
     try {
-      await xpPoints()
+      await xpPoints();
       await rewardGems();
       await completeLesson(lessonId);
       localStorage.removeItem(`lesson_${lessonId}_progress`);
     } catch (error) {
-      console.error('Failed to reward gems:', error);
+      console.error('Failed to complete lesson:', error);
     }
-  }, [rewardGems, lessonCompleted, lessonId, completeLesson,xpPoints]);
+  }, [rewardGems, lessonCompleted, lessonId, completeLesson, xpPoints]);
 
   useEffect(() => {
     if (lessonCompleted) {
@@ -303,12 +294,11 @@ function LessonPage() {
         </div>
       </div>
     );
-    
   }    
 
   return (
     <div className="mx-auto max-w-full">
-      <div className="mb-4 px-4  lg:px-96 mt-10">
+      <div className="mb-4 px-4 lg:px-96 mt-10">
         <div className="flex items-center justify-between mb-4">
           <button 
             onClick={handleClose}
@@ -338,7 +328,6 @@ function LessonPage() {
       </div>
       <div>
         {currentQuestion.isText ? (
-          
           <TextQuestion
             currentQuestion={currentQuestion}
             selectedOption={selectedOption}
@@ -353,9 +342,8 @@ function LessonPage() {
             isCorrect={isCorrect}
             onOptionSelect={handleOptionSelect}
             onRecordingComplete={handleRecordingComplete}
-           />        
+          />        
         )}
-        
       </div>
 
       <div className="border-t border-gray-400 pt-6 w-full">
