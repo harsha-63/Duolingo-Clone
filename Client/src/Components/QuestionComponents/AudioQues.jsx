@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback,useRef } from 'react';
 import { Mic, Volume2 } from 'lucide-react';
 import propTypes from 'prop-types';
 import { useReactMediaRecorder } from 'react-media-recorder';
@@ -15,118 +15,152 @@ const AudioQuestion = ({
   const [fillInBlankAnswer, setFillInBlankAnswer] = useState('');
   const [transcribedText, setTranscribedText] = useState('');
   const [recognition, setRecognition] = useState(null);
+  const [isRecognitionActive, setIsRecognitionActive] = useState(false);
+  const [interimTranscript, setInterimTranscript] = useState('');
 
-  // Memoize the transcript handler to prevent recreating speech recognition
-  const handleTranscript = useCallback((transcript) => {
-    console.log('Starting transcription...');
-    console.log('Transcribed text:', transcript);
-    setTranscribedText(transcript); 
-    onOptionSelect(transcript);
-}, [onOptionSelect, setTranscribedText]); 
+  // Enhanced speech recognition setup
 
-  useEffect(() => {
-    // Initialize speech recognition
-    console.log('Initializing speech recognition...');
-    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-    if (SpeechRecognition) {
+  const transcribedTextRef = useRef('');
+ 
+  const setupSpeechRecognition = useCallback(() => {
+    // Check for browser support
+    if (!('SpeechRecognition' in window) && !('webkitSpeechRecognition' in window)) {
+      console.error('Speech Recognition not supported in this browser');
+      return null;
+    }
+
+    try {
+      const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
       const recognitionInstance = new SpeechRecognition();
+      
       recognitionInstance.continuous = true;
       recognitionInstance.interimResults = true;
       recognitionInstance.lang = 'en-US';
-
-     
+      
+    
 
       recognitionInstance.onresult = (event) => {
-        console.log('Speech recognition event triggered');
-        console.log(event.results);
-    
-        if (!event.results || event.results.length === 0) {
-            console.warn('No transcription results received.');
-            return;
-        }
-    
-        const transcript = Array.from(event.results)
-            .map(result => result[0])
-            .map(result => result.transcript)
-            .join('');
-    
-        console.log('Final transcript:', transcript);
-        handleTranscript(transcript);
-    };
+        let finalTranscript = '';
+        let interimTranscript = '';
 
-    recognitionInstance.onstart = () => {
-      console.log('Speech recognition started');
-    };
-    
+        for (let i = event.resultIndex; i < event.results.length; i++) {
+          const result = event.results[i];
+          const transcript = result[0].transcript;
+
+          if (result.isFinal) {
+            finalTranscript += transcript;
+          } else {
+            interimTranscript += transcript;
+          }
+        }
+
+        if (finalTranscript.trim()) {
+          console.log('Final Transcript:', finalTranscript);
+          transcribedTextRef.current += finalTranscript; // Update ref instead of state
+          setTranscribedText(transcribedTextRef.current);
+          onOptionSelect(finalTranscript);
+        }
+
+        if (interimTranscript.trim()) {
+          console.log('Interim Transcript:', interimTranscript);
+          setInterimTranscript(interimTranscript);
+        }
+      };
+
 
       recognitionInstance.onerror = (event) => {
-        console.error('Speech recognition error:', event.error);
+        console.error('Speech Recognition Error:', event.error);
+        setIsRecognitionActive(false);
       };
+
+      recognitionInstance.onstart = () => {
+        console.log('Speech Recognition Started');
+        setIsRecognitionActive(true);
+       
+        
+      };
+   
+      
 
       recognitionInstance.onend = () => {
-        console.log('Speech recognition ended');
+        console.log('Speech Recognition Ended');
+        setIsRecognitionActive(false);
       };
 
+      return recognitionInstance;
+
+    } catch (error) {
+      console.error('Speech Recognition Setup Error:', error);
+      return null;
+    }
+  }, [onOptionSelect]);
+  useEffect(() => {
+    console.log('Updated isRecognitionActive:', isRecognitionActive);
+  }, [isRecognitionActive]);
+
+  // Setup speech recognition on component mount
+  useEffect(() => {
+    const recognitionInstance = setupSpeechRecognition();
+    
+    if (recognitionInstance) {
       setRecognition(recognitionInstance);
-    } else {
-      console.warn('Speech Recognition not supported in this browser');
     }
 
-    // Cleanup function
     return () => {
-      if (recognition) {
-        recognition.stop();
-        console.log('Speech recognition cleaned up');
+      if (recognitionInstance) {
+        recognitionInstance.stop();
       }
     };
-  }, [handleTranscript]);
+  }, [setupSpeechRecognition]);
 
+  // Media recorder hook
   const { status, startRecording, stopRecording, mediaBlobUrl } = useReactMediaRecorder({
     audio: true,
     onStart: () => {
-      console.log('Recording started');
+      setTranscribedText('');
+      setInterimTranscript('');
     },
     onStop: (blobUrl, blob) => {
-      console.log('Recording stopped');
       if (blob) {
-        onRecordingComplete({ 
-          blobUrl, 
-          transcribedText: transcribedText 
+        onRecordingComplete({
+          blobUrl,
+          transcribedText: transcribedTextRef.current || interimTranscript,
         });
       }
     }
+    
   });
 
-  if (!currentQuestion) {
-    return <div className="text-center text-gray-500">No question data available</div>;
-  }
-
+  // Start recording and speech recognition
   const handleStartRecording = () => {
-    console.log('Starting recording and recognition...');
     startRecording();
     if (recognition) {
-      recognition.start();
+      try {
+        recognition.start();
+        setIsRecognitionActive(true);
+      } catch (error) {
+        console.error('Failed to start recognition:', error);
+      }
     }
   };
 
+  // Stop recording and speech recognition
   const handleStopRecording = () => {
-    console.log('Stopping recording and recognition...');
     stopRecording();
     if (recognition) {
       recognition.stop();
+      setIsRecognitionActive(false);
     }
   };
 
+  // Audio playback handler
   const handleAudioPlay = () => {
     if (!currentQuestion.audioUrl) {
-      console.warn('No audio URL provided');
       return;
     }
-    console.log('Playing audio...');
     setIsPlaying(true);
     const audio = new Audio(currentQuestion.audioUrl);
     audio.onended = () => {
-      console.log('Audio playback ended');
       setIsPlaying(false);
     };
     audio.play().catch(error => {
@@ -135,6 +169,7 @@ const AudioQuestion = ({
     });
   };
 
+  // Render method for Fill in the Blank question type
   const renderFillInBlank = () => {
     const parts = currentQuestion.sentence?.split('_____') || ['', ''];
     
@@ -177,6 +212,7 @@ const AudioQuestion = ({
     );
   };
 
+  // Render method for Transcription question type
   const renderTranscription = () => (
     <div className="space-y-4 mb-10 px-4 md:px-24 lg:px-96 font-playpen">
       <h2 className="text-2xl font-bold text-gray-800 mb-6">{currentQuestion.questionType}</h2>
@@ -211,6 +247,7 @@ const AudioQuestion = ({
     </div>
   );
 
+  // Render method for Read Aloud question type
   const renderReadAloud = () => (
     <div className="space-y-4 mb-10 px-4 md:px-24 lg:px-96 font-playpen">
       <h2 className="text-3xl text-gray-800 mb-3 md:px-10 lg:px-20">{currentQuestion.questionType}</h2>
@@ -253,14 +290,24 @@ const AudioQuestion = ({
             {status === 'recording' ? 'Stop' : 'Click to Speak'}
           </span>
         </button>
-        {transcribedText && (
+        {(transcribedText || interimTranscript) && (
           <div className="mt-4 p-4 bg-gray-50 rounded-lg w-full">
-            <p className="text-gray-600">Your speech: {transcribedText}</p>
+            {transcribedText && (
+              <p className="text-gray-800 font-medium">Final: {transcribedText}</p>
+            )}
+            {interimTranscript && (
+              <p className="text-gray-600 italic">Speaking: {interimTranscript}</p>
+            )}
           </div>
         )}
       </div>
     </div>
   );
+
+  // Render based on question type
+  if (!currentQuestion) {
+    return <div className="text-center text-gray-500">No question data available</div>;
+  }
 
   const type = (currentQuestion.questionType || '').toLowerCase();
   
@@ -280,6 +327,7 @@ const AudioQuestion = ({
   }
 };
 
+// PropTypes for type checking
 AudioQuestion.propTypes = {
   currentQuestion: propTypes.shape({
     questionType: propTypes.string,

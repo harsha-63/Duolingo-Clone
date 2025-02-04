@@ -136,6 +136,8 @@ function LessonPage() {
   const handleRecordingComplete = (data) => {
     if (data && data.blobUrl) {
       setBlobUrl(data.blobUrl);
+      console.log('Blob URL:', blobUrl)
+      
       if (data.transcribedText) {
         setSelectedOption(data.transcribedText);
       }

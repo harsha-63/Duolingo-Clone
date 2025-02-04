@@ -52,7 +52,7 @@ const UserProfile = () => {
 
           <div className="bg-white shadow-md p-4 rounded-lg text-center">
             <div className="text-gray-500 text-sm">Current League</div>
-            <div className="text-xl font-bold">{user?.currentLeague || 'None'}</div>
+            <div className="text-xl font-bold">{user?.league || 'None'}</div>
           </div>
 
           <div className="bg-white shadow-md p-4 rounded-lg text-center">

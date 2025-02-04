@@ -81,7 +81,8 @@ const createRefreshToken = (id) => {
               gems: user.gems,       
               life: user.life ,
               streak: user.streak,
-              completedLessons:user.completedLessons    
+              completedLessons:user.completedLessons,
+              league:user.league    
             },
             accessToken,
           

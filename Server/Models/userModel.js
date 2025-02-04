@@ -60,6 +60,7 @@ const userSchema = new mongoose.Schema({
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Lesson',
   },
+  league: { type: String, default: 'Copper League' },
   streak: {
     type: Number,
     default: 0

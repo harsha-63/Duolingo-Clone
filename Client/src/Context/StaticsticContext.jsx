@@ -13,10 +13,11 @@ const UserStatisticsProvider = ({ children }) => {
       return {
         life: typeof user?.life === 'number' ? user.life : 5,
         gems: typeof user?.gems === 'number' ? user.gems : 50,
-        xpPoints:typeof user?.xpPoints ==='number' ? user.xpPoints:200
+        xpPoints:typeof user?.xpPoints ==='number' ? user.xpPoints:200,
+        league: typeof user?.league === 'string' ? user.league : 'Copper League'
       };
     } catch {
-      return { life: 5, gems: 50 ,xpPoints:200 };
+      return { life: 5, gems: 50 ,xpPoints:200, league: 'Copper League'};
     }
   };
 
@@ -138,7 +139,8 @@ const UserStatisticsProvider = ({ children }) => {
         userId: userId,
       });
       
-      const newStats = { xpPoints: response.data.xpPoints };
+      const newStats = { xpPoints: response.data.xpPoints,league: response.data.league };
+
       updateStats(newStats);
       return response.data;
     } catch (error) {

@@ -45,7 +45,7 @@ const LessonProvider = ({ children }) => {
           const firstSectionId = sectionsResponse.data[0]._id;
           const lessonsResponse = await axios.get(`${import.meta.env.VITE_API_URL}/user/sections/${firstSectionId}/lessons`);
           setLessons(lessonsResponse.data);
-          console.log(lessonsResponse.data)
+          
          
         }
       } catch (error) {
@@ -160,3 +160,7 @@ useEffect(() => {
 };
 
 export default LessonProvider;
+
+
+
+

@@ -59,9 +59,25 @@ export const xpPoints = async (req, res) => {
   try {
     const user = await User.findById(userId);
     if (user) {
-      user.xpPoints += 15
+      // Add XP points
+      user.xpPoints += 50;
+      
+      // Update league based on XP points
+      if (user.xpPoints >= 500) {
+        user.league = "Gold League";
+      } else if (user.xpPoints >= 300) {
+        user.league = "Silver League";
+      } else if (user.xpPoints >= 100) {
+        user.league = "Bronze League";
+      } else {
+        user.league = "Copper League";
+      }
+
       await user.save();
-      res.status(200).json({ xpPoints: user.xpPoints });
+      res.status(200).json({ 
+        xpPoints: user.xpPoints,
+        league: user.league 
+      });
     } else {
       res.status(404).json({ message: 'User not found' });
     }

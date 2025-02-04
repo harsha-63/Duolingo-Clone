@@ -1,4 +1,8 @@
+import { AuthContext } from "../Context/AuthContext";
+import { useContext } from "react";
+
 const Shop = () => {
+  const {user}=useContext(AuthContext);
   return (
     <div className="max-w-2xl mx-auto p-4">
       {/* Promotional Banner */}
@@ -33,9 +37,21 @@ const Shop = () => {
               </p>
             </div>
           </div>
-          <button className="bg-gray-300 text-gray-500 px-4 py-1 rounded-lg cursor-not-allowed">
-            FULL
-          </button>
+          <button className=" bg-gray-300 text-gray-500 px-4 py-1 rounded-lg cursor-not-allowed flex items-center">
+  {user.life === 5 ? (
+    "FULL"
+  ) : (
+    <>
+      Get for: 350
+  <img 
+    src="https://d35aaqx5ub95lt.cloudfront.net/vendor/45c14e05be9c1af1d7d0b54c6eed7eee.svg" 
+    alt="" 
+    className="w-6 h-6 ml-2"
+  />
+    </>
+  )}
+</button>
+
         </div>
 
         {/* Unlimited Hearts */}
