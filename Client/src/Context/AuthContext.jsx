@@ -29,12 +29,13 @@ const AuthContextProvider = ({ children }) => {
 
   const login = async (email, password) => {
     try {
-      const response = await axios.post(`${import.meta.env.VITE_API_URL}/auth/login`, { email, password });
-      const { accessToken, refreshToken } = response.data;
+      const response = await axios.post(`${import.meta.env.VITE_API_URL}/auth/login`, { email, password }, {
+        withCredentials: true
+      });
+      const { accessToken } = response.data;
       const user = response.data.user
-      console.log(response.data.message); 
       setUser(user);
-      localStorage.setItem("token", JSON.stringify({ accessToken, refreshToken })); 
+      localStorage.setItem("accessToken", accessToken); 
       localStorage.setItem("user", JSON.stringify(user)); 
 
     } catch (error) {
@@ -56,11 +57,34 @@ const AuthContextProvider = ({ children }) => {
   const logout = () => {
     setUser(null);
     localStorage.removeItem("user");
-    localStorage.removeItem("token");
+    localStorage.removeItem("accessToken");
   };
 
+const updateProfile = async (imageUrl) => {
+  try {
+    const token = localStorage.getItem('token'); // or however you're storing the token
+
+    const response = await axiosInstance.put('/user/profile', {
+      profileImage: imageUrl
+    }, {
+      headers: {
+        Authorization: `Bearer ${token}` // Ensure this is included
+      }
+    });
+
+    console.log("Profile updated successfully:", response.data);
+    return response.data;
+  } catch (err) {
+    console.error("API error:", err.response?.data || err.message);
+    throw new Error(err.response?.data?.message || 'Error updating profile');
+  }
+};
+
+
+
+
   return (
-    <AuthContext.Provider value={{ user, setUser, login, register, logout,getAllUsers }}>
+    <AuthContext.Provider value={{ user, setUser, login, register, logout,getAllUsers,updateProfile }}>
       {children}
     </AuthContext.Provider>
   );

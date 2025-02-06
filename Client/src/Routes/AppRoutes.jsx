@@ -6,6 +6,7 @@ import MainPage from '../Pages/MainPage'
 import RegisterSection from '../Pages/RegisterQues'
 import WelcomePage from '../Pages/Welcome'
 import LessonPage from '../Pages/LessonPage'
+import EditProfile from '../Pages/EditProfile'
 
 
 
@@ -26,6 +27,7 @@ const AppRoutes = () => {
         <Route path="/sounds" element={<MainPage/>} />
         <Route path="/profile" element={<MainPage/>} />
         <Route path="/lesson/:lessonId" element={<LessonPage/>} />
+        <Route path='/edit' element ={<EditProfile />} />
     </Routes>
     </>
   )

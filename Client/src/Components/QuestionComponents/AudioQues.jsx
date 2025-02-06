@@ -56,7 +56,7 @@ const AudioQuestion = ({
 
         if (finalTranscript.trim()) {
           console.log('Final Transcript:', finalTranscript);
-          transcribedTextRef.current += finalTranscript; // Update ref instead of state
+          transcribedTextRef.current += finalTranscript; 
           setTranscribedText(transcribedTextRef.current);
           onOptionSelect(finalTranscript);
         }
@@ -85,6 +85,8 @@ const AudioQuestion = ({
       recognitionInstance.onend = () => {
         console.log('Speech Recognition Ended');
         setIsRecognitionActive(false);
+       
+        
       };
 
       return recognitionInstance;
@@ -128,8 +130,11 @@ const AudioQuestion = ({
         });
       }
     }
+
     
   });
+  console.log(mediaBlobUrl);
+  
 
   // Start recording and speech recognition
   const handleStartRecording = () => {

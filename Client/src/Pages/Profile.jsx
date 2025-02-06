@@ -1,24 +1,42 @@
-import { useContext } from 'react';
+import { useContext,useEffect } from 'react';
 import { AuthContext } from '../Context/AuthContext';
 import { Pencil, ChevronRight } from 'lucide-react';
+import { NavLink, useNavigate } from 'react-router-dom';
+
 
 const UserProfile = () => {
   const { user } = useContext(AuthContext);
+  const navigate = useNavigate
+
+  useEffect(() => {
+    if (!user) {
+      navigate('/isloggin');
+    }
+  }, [user, navigate]);
+
+  if (!user) return null;
 
   return (
+    
     <div className="flex flex-col items-start p-4 md:p-8 min-h-screen font-playpen text-gray-500">
       <div className="flex flex-col items-start w-full">
         <div className="relative w-full max-w-2xl h-auto md:h-56 bg-blue-50 rounded-lg flex items-center justify-center mb-4 p-4 max-md:mt-16 max-md:h-48">
-          <div className="w-24 md:w-32 h-24 md:h-32 flex items-center justify-center">
-            <img src='https://d35aaqx5ub95lt.cloudfront.net/images/7a24dbe6c243d2bbf8b6c8aad73dc941.svg' alt='' className='w-72 h-64 max-md:w-80 max-md:h-72'/>
-          </div>
+        <div className="w-24 md:w-32 h-24 md:h-32 flex items-center justify-center overflow-hidden rounded-full">
+        <img 
+          src={user ? user.profileImage : 'https://d35aaqx5ub95lt.cloudfront.net/images/7a24dbe6c243d2bbf8b6c8aad73dc941.svg'} 
+          alt='' 
+          className='w-full h-full object-cover' 
+        />
+      </div>
+
           
-          <button
+          <NavLink
+           to={'/edit'}
             className="absolute top-4 right-4 p-2 rounded-lg bg-white/80 backdrop-blur"
             onClick={() => alert("Edit profile picture functionality")}
           >
             <Pencil className="h-5 w-5 text-gray-600" />
-          </button>
+          </NavLink>
         </div>
 
         <div className="w-full">
@@ -37,7 +55,7 @@ const UserProfile = () => {
 
       <div className="mt-7 w-full">
         <h1 className="text-xl font-semibold mb-4">Statistics</h1>
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <div className="grid grid-cols-2 sm:grid-cols-2 gap-4">
           <div className="bg-white shadow-md p-4 rounded-lg text-center">
             <div className="text-gray-500 text-sm">Day Streak</div>
             <div className="text-xl font-bold">{user?.streak || 0}</div>
@@ -73,7 +91,7 @@ const UserProfile = () => {
         
         <div className="space-y-4">
           <div className="flex flex-col sm:flex-row items-start sm:items-center space-y-2 sm:space-y-0 sm:space-x-4 bg-white shadow-md p-4 rounded-lg">
-            <div className="w-12 h-12 bg-red-500 rounded-lg flex items-center justify-center flex-shrink-0">
+            <div className="w-12 h-12 bg-red-500 rounded-lg flex items-center  justify-center flex-shrink-0">
               🔥
             </div>
             <div className="flex-1 w-full">
@@ -100,12 +118,18 @@ const UserProfile = () => {
             <div className="flex-1 w-full">
               <div className="flex justify-between items-center">
                 <h2 className="text-lg font-bold">Sage</h2>
-                <span className="text-sm text-gray-400">0/100</span>
+                <span className="text-sm text-gray-400">{user.xpPoints}/1000</span>
               </div>
               <p className="text-sm text-gray-500">Earn 100 XP</p>
+              
+              {/* Progress Bar */}
               <div className="w-full bg-gray-100 rounded-full h-2 mt-2">
-                <div className="bg-gray-200 h-2 rounded-full" style={{ width: '0%' }}></div>
+                <div 
+                  className="bg-orange-500 h-2 rounded-full transition-all duration-300"
+                  style={{ width: `${(user.xpPoints / 1000) * 100}%` }} // Dynamic width
+                ></div>
               </div>
+
               <div className="mt-2">
                 <span className="inline-block px-2 py-1 text-xs font-medium bg-gray-100 text-gray-600 rounded">
                   LEVEL 1
@@ -113,6 +137,7 @@ const UserProfile = () => {
               </div>
             </div>
           </div>
+
 
           <div className="flex flex-col sm:flex-row items-start sm:items-center space-y-2 sm:space-y-0 sm:space-x-4 bg-white shadow-md p-4 rounded-lg">
             <div className="w-12 h-12 bg-red-500 rounded-lg flex items-center justify-center flex-shrink-0">

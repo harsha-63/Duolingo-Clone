@@ -10,8 +10,6 @@ import AudioQuestion from "../Models/audioModel.js";
 export const getAllSections = async (req, res) => {
   try {
     const sections = await Section.find();
-    console.log(sections); 
-    console.log(sections[0].lessons); 
     res.status(200).json(sections);
   } catch (error) {
     console.error(`Error fetching sections: ${error.message}`);
@@ -38,8 +36,7 @@ export const getSectionById = async (req, res) => {
 //get all lessons
 export const getLessonsInSection = async (req, res) => {
   try {
-    const { id } = req.params;
-    console.log("Section ID:", id);  
+    const { id } = req.params; 
     if (!mongoose.Types.ObjectId.isValid(id)) {
       return res.status(400).json({ message: "Invalid section ID" });
     }
@@ -59,14 +56,11 @@ export const getLessonsInSection = async (req, res) => {
 export const getLessonById = async (req, res) => {
   try {
     const { id } = req.params;
-    console.log('Requested ID:', id);
 
     if (!mongoose.Types.ObjectId.isValid(id)) {
       return res.status(400).json({ message: 'Invalid lesson ID' });
     }
     const lesson = await Lesson.findById(id)
-    
-    console.log('Lesson Found:', lesson);
  
     res.status(200).json(lesson);
   } catch (error) {
@@ -79,7 +73,6 @@ export const getQuestionsForLesson = async (req, res) => {
  
   try {
     const { lessonId } = req.params;
-    console.log("Lesson ID:", lessonId);
     if (!mongoose.Types.ObjectId.isValid(lessonId)) {
       return res.status(400).json({ message: 'Invalid lesson ID' });
     }
@@ -87,8 +80,6 @@ export const getQuestionsForLesson = async (req, res) => {
     if (!lesson) {
       return res.status(404).json({ message: "Lesson not found" });
     }
-    console.log(lesson);
-    console.log(lesson.questions);
     res.status(200).json(lesson.questions);
   } catch (error) {
     console.error(`Error fetching questions: ${error.message}`);
@@ -128,10 +119,8 @@ export const getQuestionById = async (req, res) => {
     }
     if(isText){
       const question = await TextQuestion.findById(id);
-      console.log(question);
       res.status(200).json(question);
     }else{
-      console.log(isText);
       const question = await AudioQuestion.findById(id);
       res.status(200).json(question);
     }

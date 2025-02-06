@@ -162,6 +162,8 @@ function LessonPage() {
     if (!isAnswerCorrect) {
       try {
         await reduceLife();
+        console.log(userStats.life);
+        
         if (userStats.life < 1) {
           setShowZeroLivesModal(true);
         } else {

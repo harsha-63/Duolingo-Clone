@@ -2,15 +2,18 @@
 import express from 'express';
 import { getAllSections,getSectionById,getLessonsInSection,getLessonById,getQuestionsForLesson,startLesson,resetLessonProgress,completeLesson,getQuestionById } from '../Controllers/lessonController.js';
 import { reduceLife, refillLife, rewardGems,xpPoints } from '../Controllers/statisticController.js';
-import { getAllUsers } from '../Controllers/userController.js';
+import { getAllUsers, updateUserProfile } from '../Controllers/userController.js';
+import  verifyToken  from '../MiddleWares/verifyToken.js';
 
 
 
-const userRouter = express.Router();  
+const userRouter = express.Router(); 
+
 
 userRouter
 
 .get('/users',getAllUsers)
+.put('/profile',verifyToken,updateUserProfile)
 
 
 .get('/sections', getAllSections)

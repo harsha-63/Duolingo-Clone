@@ -3,6 +3,7 @@ import User from "../Models/userModel.js";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import joiUserSchema from '../Models/joiValidation.js'
+import CustomError from "../Utils/customError.js";
 
 export const register = async (req, res) => {
     try {
@@ -64,10 +65,12 @@ const createRefreshToken = (id) => {
           const refreshToken = createRefreshToken(user._id);
     
           res.cookie("refreshToken", refreshToken, {
-            httpOnly: true, 
-            secure: true, 
-            sameSite: "none"
-          })
+            httpOnly: true,
+            secure: true,
+            sameSite: "none",
+            maxAge: 24 * 60 * 60 * 1000, // 1 day
+          });
+          
           res.status(200).json({
             message: "Login successfully",
             user: {
@@ -82,11 +85,16 @@ const createRefreshToken = (id) => {
               life: user.life ,
               streak: user.streak,
               completedLessons:user.completedLessons,
-              league:user.league    
+              league:user.league   ,
+              profileImage :user.profileImage
+
             },
             accessToken,
-          
+            
+            
           });
+          console.log("check");
+          
         }
         catch (error) {
           console.error(`Error: ${error.message}`);
@@ -101,12 +109,18 @@ const createRefreshToken = (id) => {
     export const refreshingToken = async (req, res, next) => {
       const refreshToken = req.cookies?.refreshToken;
       if (!refreshToken) {
-        return next(new CustomError("No refresh token provided", 401));
-      }  
+        return next(new CustomError('Refresh token is required', 400));
+      }
+    
+      try {
         const decoded = jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET);
-        const accessToken = createToken(decoded.id,process.env.REFRESH_TOKEN_EXPIRES_IN );
-        res.status(200).json({
-          message: "Token refreshed",
-          token: accessToken,
-        });
+        console.log('Decoded Token:', decoded);  
+    
+        const newToken = createToken(decoded.id);
+    
+        res.status(200).json({  message: "Token refreshed", token: newToken });
+      } catch (error) {
+        console.error('Error in refreshAccessToken:', error.message, error.stack);
+        next(new CustomError('Invalid or expired refresh token', 401));
+      }
     };
